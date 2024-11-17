@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>订单确认</title>
+<meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="telephone=no" name="format-detection"/>
+<meta http-equiv="refresh" content="4">
+<link rel="stylesheet" type="text/css" href="__STATIC__assets/pay/css/alipay_jump_style.css?v=3"/>
+</head>
+<body>
+<section class="aui-flexView">
+  <header class="aui-navBar aui-navBar-fixed">
+    <div class="aui-center"> <span class="aui-center-title"><img src="__STATIC__assets/pay/images/alipay_grey.png"></span> </div>
+  </header>
+  <section class="aui-scrollView">
+    <div class="aui-pay-box">
+      <div class="aui-pay-text">
+        <p>支付金额</p>
+        <h2><em>￥</em>{$data.price|raw}</h2>
+        <p>付款后请稍候几秒即可，切勿关闭页面。</p>
+      </div>
+      <div class="aui-pay-fill">
+        <div class="aui-pay-flex">
+          <div class="aui-flex b-line">
+            <div class="aui-flex-box">
+              <h2 class="aui-pay-titleS">支付信息</h2>
+            </div>
+          </div>
+          <div class="aui-pay-info">
+            <p class="aui-flex">订单金额 <em class="aui-flex-box">¥{$data.money|raw}</em></p>
+            <p class="aui-flex">应支付金额 <em class="aui-flex-box">¥{$data.price|raw}</em></p>
+            <p class="aui-flex">订单号 <em class="aui-flex-box">{$data.order_id|raw}</em></p>
+            {if condition="$data.state eq '1'"}
+            <p class="aui-flex">当前状态 <em class="aui-flex-box" style="color:#ff0000;">待支付</em></p>
+            {elseif condition="$data.state eq '2'" /}
+            <p class="aui-flex">当前状态 <em class="aui-flex-box" style="color:#5FB878;">已支付</em></p>
+            {else /}
+            <p class="aui-flex">当前状态 <em class="aui-flex-box" style="color:#FFB800;">已过期</em></p>
+            {/if}
+            <p class="aui-flex">下单时间 <em class="aui-flex-box">{$data.create_date|date='Y-m-d H:i:s'}</em></p>
+          </div>
+        </div>
+      </div>
+      <div class="aui-pay-com">
+          <button>立即支付</button>
+      </div>
+      <div class="copyright">Copyright © 支付宝版权所有 2004-2021</div>
+    </div>
+  </section>
+</section>
+<script src="__STATIC__assets/pay/js/jquery.min.js"></script>
+<script>
+var orderstatus='{$data.state|raw}';//2为已支付完，1为待支付， 3为已过期
+function toast(config, callback){
+  AlipayJSBridge.call('toast',config, callback);
+}
+function ready(callback) {
+  // 如果jsbridge已经注入则直接调用
+  if (window.AlipayJSBridge) {
+    callback && callback();
+  } else {
+    // 如果没有注入则监听注入的事件
+    document.addEventListener('AlipayJSBridgeReady', callback, false);
+  }
+}
+
+var browser = navigator.userAgent.toLowerCase();
+if (browser.match(/Alipay/i)=="alipay") {
+	ready(function(){});
+	//隐藏右上角菜单
+	AlipayJSBridge.call('hideOptionMenu');
+}
+{if condition="$data.state eq '2'"}
+	toast({
+    content: '支付成功',
+    type: 'success',
+    duration: 1800,
+    }, function(e){
+    	 AlipayJSBridge.call('popWindow');
+    });
+{elseif condition="$data.state eq '3'" /}
+	toast({
+    content: '订单已过期',
+    type: 'success',
+    duration: 1800,
+    }, function(e){
+    	 AlipayJSBridge.call('popWindow');
+    });
+{/if}
+$(document).ready(function(e) {
+	$(".aui-pay-com button").click(function(e) {
+		var browser = navigator.userAgent.toLowerCase();
+		if (browser.match(/Alipay/i)=="alipay" && orderstatus==1) {
+            AlipayJSBridge.call('pushWindow', {
+                url: '{:urldecode($data.mid_url)}',
+				param: {
+					readTitle: true,
+					showOptionMenu: false
+				}
+			});
+        }
+		else if(browser.match(/Alipay/i)=="alipay" && orderstatus==2){
+    	    toast({
+      	    content: '请勿重复支付',
+      	    type: 'fail'
+    	    }, function(e){
+    	        AlipayJSBridge.call('popWindow');
+    	    });
+		}
+		else if(browser.match(/Alipay/i)=="alipay"){
+		    toast({
+      	    content: '请重新发起支付',
+      	    type: 'fail'
+    	    }, function(e){
+    	        AlipayJSBridge.call('popWindow');
+    	    });
+		}
+		else{
+			alert('仅限在支付宝内支付');
+		}
+    });
+});
+</script>
+</body>
+</html>

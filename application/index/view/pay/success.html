@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>支付结果</title>
+    <link href="../../static/user/assets/pay/css/wechat_pay.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="../../static/user/assets/pay/js/jquery.min.js"></script>
+    <style>
+        .text-success {
+            color: #468847;
+            font-size: 2.33333333em;
+        }
+
+        .text-fail {
+            color: #ff0c13;
+            font-size: 2.33333333em;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .error {
+
+            display: block;
+            padding: 9.5px;
+            margin: 0 0 10px;
+            font-size: 13px;
+            line-height: 1.42857143;
+            color: #333;
+            word-break: break-all;
+            word-wrap: break-word;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+
+        }
+    </style>
+</head>
+
+<body>
+<div class="body" id="body">
+    <h1 class="mod-title">
+        {if condition="$data.type eq 'alipay'"}<span class="ico_log ico-1"></span>{elseif condition="$data.type eq 'weixin'" /}<span class="ico_log ico-3"></span>{else /}<span class="ico_log ico-2"></span>{/if}
+    </h1>
+
+    <div class="mod-ct">
+        <div class="order">
+        </div>
+        
+        <div class='error text-left'><h1 class="text-center text-success">交易付款成功</h1><!--fail-success--></div>
+        <div class="detail detail-open" style="display: block;">
+            <dl class="detail-ct" id="desc" >
+                <dt>商户订单号：</dt>
+                <dd>{$data.order_id}</dd>
+                <dt>支付方式：</dt>
+                <dd>{$data.type}</dd>
+                <dt>订单金额：</dt>
+                <dd>{$data.money}</dd>
+                <dt>应支付金额：</dt>
+                <dd>{$data.price}</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="foot">
+        <div class="inner">
+            <p>如有问题，请联系客服</p>
+            <!--<p>本站源码由<a href="//shoquan.xyz/" target="_blank" style="color:#5FB878">呆呆</a>提供技术服务支持</p>-->
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@1.11.3"></script>
+<script src="https://lib.baomitu.com/layer/3.1.1/layer.js"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <style>
+        #formAdvForm .layui-form-item {
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
+
+        #formAdvForm .layui-form-item .layui-inline {
+            margin-bottom: 25px;
+            margin-right: 0;
+        }
+
+        .form-group-bottom {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px 20px;
+            background-color: #fff;
+            box-shadow: 0 -1px 2px 0 rgba(0, 0, 0, .05);
+        }
+    </style>
+</head>
+<body>
+<!-- 正文开始 -->
+<form class="layui-form" id="formAdvForm" lay-filter="formAdvForm">
+    <div class="layui-fluid" style="padding-bottom: 75px;">
+        <div class="layui-card">
+            <div class="layui-card-header">基本配置</div>
+            <div class="layui-card-body">
+                <div class="layui-form-item layui-row">
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">站点名称:</label>
+                        <div class="layui-input-block">
+                            <input name="web_name" placeholder="请输入站点名称" class="layui-input" lay-verType="tips" lay-verify="required" value="{$data.web_name}" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">关键词:</label>
+                        <div class="layui-input-block">
+                            <input name="web_keywords" placeholder="请输入站点关键词" class="layui-input" lay-verType="tips" lay-verify="required" value="{$data.web_keywords}" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">描述词:</label>
+                        <div class="layui-input-block">
+                            <input name="web_description" placeholder="请输入站点描述词" class="layui-input" lay-verType="tips" lay-verify="required" value="{$data.web_description}" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">备案号:</label>
+                        <div class="layui-input-inline">
+                            <input name="web_beian" placeholder="请输入备案号信息" class="layui-input" lay-verType="tips" lay-verify="required" value="{$data.web_beian}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">示范：粤ICP备XXXXX号</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">客服URL:</label>
+                        <div class="layui-input-inline">
+                            <input name="web_kefu" placeholder="请输入客服URL" class="layui-input" lay-verType="tips" value="{$data.web_kefu}" required/>
+                        </div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">加群URL:</label>
+                        <div class="layui-input-inline">
+                            <input name="web_qun" placeholder="请输入加群URL" class="layui-input" lay-verType="tips" value="{$data.web_qun}" required/>
+                        </div>
+                    </div>
+                
+                 <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">默认余额:</label>
+                        <div class="layui-input-inline">
+                            <input name="ds_money" placeholder="请输入默认赠送的余额" class="layui-input" lay-verType="tips" lay-verify="required" value="{$data.ds_money}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">商户注册默认增加的余额</div>
+                    </div>
+                
+                 <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">默认费率:</label>
+                        <div class="layui-input-inline">
+                            <input type="number" name="ds_fee" placeholder="请输入商户注册默认的手续费费率" class="layui-input inline-block" lay-verType="tips" lay-verify="required" value="{$data.ds_fee}" style="width: 100px;" required/>
+                        <span>&nbsp;&nbsp;%</span>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux">商户注册默认的手续费费率</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">默认模式:</label>
+                        <div class="layui-input-inline">
+                           <select name="web_djms" lay-verify="required" required>
+                           <option value="1" {if condition="$data.web_djms eq '1'"} selected = "selected" {/if}>默认（系统）</option>
+                           <option value="2" {if condition="$data.web_djms eq '2'"} selected = "selected" {/if}>易支付</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">商户注册默认对接模式</div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="form-group-bottom text-right">
+            <button type="reset" class="layui-btn layui-btn-primary">&emsp;重置&emsp;</button>
+            <button class="layui-btn" lay-filter="formAdvSubmit" lay-submit>&emsp;提交&emsp;</button>
+        </div>
+    </div>
+</form>   
+<!-- //表单结束 --> 
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer', 'form', 'laydate','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var notice = layui.notice;
+        
+        /* 监听表单提交 */
+        form.on('submit(formAdvSubmit)', function (data) {
+            var loadIndex = layer.load(2);
+                $.post('config', data.field, function (res) {
+                layer.close(loadIndex);
+                if (1 == res.code) {                                
+                    notice.msg(res.msg, {icon: 1});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{$data['name']}</title>
+    <link type="text/css" href="__STATIC__assets/pay/cashier/simplicity/css/argon.min.css" rel="stylesheet" />
+    <style>
+        /*从左滑到右*/
+        @keyframes fadeleftIn {
+            0% {
+                -webkit-transform: translate3d(100%, 0, 0);
+                -webkit-transform: translate3d(100%, 0, 0);
+                transform: translate3d(100%, 0, 0);
+                transform: translate3d(100%, 0, 0);
+            }
+            100% {
+                -webkit-transform: none;
+                transform: none;
+            }
+        }
+        /*抖动效果*/
+        @keyframes dou {
+            0% {
+                transform: rotate(4deg);
+            }
+            50% {
+                transform: rotate(-4deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+        /*放大弹出*/
+        @keyframes popIn {
+            0% {
+                -webkit-transform: scale3d(0, 0, 0);
+                transform: scale3d(0.5, 0.5, 0.5);
+                opacity: 0;
+            }
+            50% {
+                -webkit-animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+                animation-timing-function: cubic-bezier(0.47, 0, 0.745, 0.715);
+            }
+            100% {
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+                -webkit-animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+                opacity: 1;
+            }
+        }
+        .fadeleftIn{
+            animation: fadeleftIn .4s;
+        }
+        .form-group{
+            animation: popIn .5s;
+        }
+        .dou{
+            animation: dou .5s;
+        }
+        .section-profile-cover{
+            height:280px;
+        }
+        .portrait {
+            width: 47px;
+            height: 47px;
+            border-radius: 7px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+        .btn-soft-danger{
+            border: #8898aa 1px solid;
+        }
+    </style>
+</head>
+<body>
+<main class="profile-page">
+    <section class="section-profile-cover section-shaped my-0">
+        <!-- Circles background -->
+        <div class="shape shape-style-1 shape-primary alpha-4">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <!-- SVG separator -->
+        <div class="separator separator-bottom separator-skew">
+            <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                <polygon class="fill-white" points="2560 0 2560 100 0 100" ></polygon>
+            </svg>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container" >
+            <div class="card card-profile shadow mt--300">
+                <div class="px-4">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-3 order-lg-2">
+                            <div class="card-profile-image">
+                                <a href="#">
+                                    <img class="rounded-bottom"/>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- 门店名称展示 -->
+                        <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center"></div>
+                        <div class="col-lg-12 order-lg-1 mb-2 mt-3 fadeleftIn">
+                            <div class="card-profile-stats" style="font-size: 26px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;padding-left: 27px">
+                                {if condition="$data.jh_mdtx or ''"}
+                                <img src="{$data['jh_mdtx']}" class="portrait"/>
+                                {/if}
+                                {if condition="$data.jh_mdcm or ''"}
+                                {$data['jh_mdcm']}
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr mt-2"></div>
+                    <form id="pay_form" action="sytpay" method="post">
+                        <input type="hidden" value="1" name="sytpay"/>
+                        <input type="hidden" value="{$data['id']}" name="pid" >
+                        <input type="hidden" value="{:base64_encode($data['key'])}" name="key"/>
+                        <input type="hidden" id="pay_type" name="type">
+                        <!-- 金额输入（账单金额等） -->
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right">付款<br/><br>金额</span>
+                            <div class="col-sm-10">
+                                <input type="text" style="height: 100px;font-size: 32px"
+                                       class="form-control" name="money" id="pay_money" placeholder="0.00">
+                            </div>
+                        </div>
+                        <!-- 预选金额 -->
+                        {if condition="$data['preselection_switch']"}
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right"></span>
+                            <div class="col-sm-10">
+                                {for start="0" end="6"}
+                                {if condition="isset($data['jh_je'][$i]) && trim($data['jh_je'][$i])!='' && $data['jh_je'][$i]!=NULL"}
+                                <button type="button" class="btn btn-soft-danger preselection"  style="font-size: 20px" value="{$data['jh_je'][$i]}">￥{$data['jh_je'][$i]}</button>
+                                {/if}
+                                {/for}
+                            </div>
+                        </div>
+                        {/if}
+                        <!-- 支付方式 -->
+                        {if condition="$data.pay_type eq 'alipay'"}
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right">支付<br>方式</span>
+                            <div class="col-sm-10 mt-3">
+                                <button type="button" class="btn btn-type btn-danger" onclick="change_type(this)" value="alipay"><img style="vertical-align:middle" src="__STATIC__assets/images/alipay.ico" width="20"/>&nbsp;支付宝</button>
+                            </div>
+                        </div>
+                        {elseif condition="$data.pay_type eq 'weixin'" /}
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right">支付<br>方式</span>
+                            <div class="col-sm-10 mt-3">
+                                <button type="button" class="btn btn-type btn-danger" onclick="change_type(this)" value="weixin"><img style="vertical-align:middle" src="__STATIC__assets/images/weixin.ico" width="20"/>&nbsp;微信支付</button>
+                            </div>
+                        </div>
+                        {elseif condition="$data.pay_type eq 'qq'" /}
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right">支付<br>方式</span>
+                            <div class="col-sm-10 mt-3">
+                                <button type="button" class="btn btn-type btn-danger" onclick="change_type(this)" value="qq"><img style="vertical-align:middle" src="__STATIC__assets/images/qq.ico" width="20"/>&nbsp;QQ钱包</button>
+                            </div>
+                        </div>
+                        
+                        {else /}
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right">支付<br>方式</span>
+                            <div class="col-sm-10 mt-3">
+                                <button type="button" class="btn btn-type btn-danger" onclick="change_type(this)" value="alipay"><img style="vertical-align:middle" src="__STATIC__assets/images/alipay.ico" width="20"/>&nbsp;支付宝</button>
+                                <button type="button" class="btn btn-type btn-neutral btn-danger" onclick="change_type(this)" value="weixin"><img style="vertical-align:middle" src="__STATIC__assets/images/weixin.ico" width="20"/>&nbsp;微信支付</button>
+                                <button type="button" class="btn btn-type btn-neutral btn-danger" onclick="change_type(this)" value="qq"><img style="vertical-align:middle" src="__STATIC__assets/images/qq.ico" width="20"/>&nbsp;QQ钱包</button>
+                            </div>
+                        </div>
+                        {/if}
+                        <!--备注 部分 start-->
+                        <div class="form-group row">
+                            <span class="col-sm-1 col-form-label text-right"></span>
+                            <div class="col-sm-10">
+                                <input type="text"
+                                       class="form-control mt-1" name="remarks" id="pay_remarks"
+                                       placeholder="备注信息" style="height: 35px;font-size: 15px">
+                            </div>
+                        </div>
+                    </form>
+                    <div class="mt-4 py-4 text-center">
+                            <div class="text-center">
+                                <button id="form_but" class="dou btn btn-primary btn-round btn-block"
+                                >立即支付</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="__STATIC__assets/pay/cashier/simplicity/js/jquery.min.js"></script>
+<script src="__STATIC__assets/pay/cashier/simplicity/js/bootstrap.min.js"></script>
+<script src="__STATIC__assets/pay/cashier/simplicity/js/layer.min.js"></script>
+<script>
+    $("#pay_type").val($(".btn.btn-danger.btn-type").val());
+
+    function change_type(e) {
+        $(".btn-type").attr("class", "btn btn-neutral btn-danger btn-type");
+        $(e).attr("class", "btn btn-danger btn-type");
+        var type = $(e).val();
+        $("#pay_type").val(type);
+    }
+    $(".preselection").click(function (){
+        var val = $(this).val();
+        if (checkPrice(val)) {
+            $("#pay_money").val(val);
+        }
+    });
+    $("#form_but").click(function () {
+        if ($("#pay_type").val() == "" || !$("#pay_type").val()) {
+            layer.msg("请选择支付方式");
+            return;
+        }
+        if (checkPrice($("#pay_money").val())) {
+            layer.msg("发起支付");
+            $("#pay_form").submit();
+        } else {
+            layer.msg("请正确输入金额");
+        }
+    });
+    function checkPrice(value) {
+        var reg = /^[+-]?[1-9]?[0-9]*\.[0-9]*$/, reg1 = /^[0-9]*[1-9][0-9]*$/;
+        if (!reg1.test(value) && !reg.test(value) && value !== "0") {
+            return false
+        } else if (reg.test(value) && value.split(".")[1].length > 2 || value * 1 < .01 && type == 2 || reg.test(value) && value.split(".")[1].length == 0) {
+            return false
+        }
+        return true
+    }
+</script>
+
+</body>
+</html>

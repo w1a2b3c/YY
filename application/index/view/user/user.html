@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /** 数据表格中的select尺寸调整 */
+        .layui-table-view .layui-table-cell .layui-select-title .layui-input {
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-select-title .layui-input {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-btn-xs {
+            height: 18px;
+            line-height: 18px;
+        }
+        .alert {
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+         }
+
+        .alert-info {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+        }
+        .alert-dismissable, .alert-dismissible {
+            padding-right: 35px;
+        }
+        .alert {
+                padding: 15px;
+                margin-bottom: 20px;
+                border: 1px solid transparent;
+                border-radius: 4px;
+        }
+    </style>
+</head>
+<body onscroll="layui.admin.hideFixedEl();">
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格工具栏 -->
+            <form class="layui-form toolbar table-tool-mini">
+                <div class="layui-form-item">
+                   {if condition="$data.gogao"}
+                   <div class="alert alert-info alert-dismissible" role="alert">{$data.gogao|raw}</div>
+                   {/if}
+                   <div class="layui-inline">
+                        <label class="layui-form-label w-auto">账号备注:</label>
+                        <div class="layui-input-inline">
+                            <input name="username" class="layui-input" type="text" placeholder="输入账号备注"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button class="layui-btn icon-btn" lay-filter="tbBasicTbSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                        <button id="tbBasicExportBtn" class="layui-btn icon-btn" type="button">
+                            <i class="layui-icon">&#xe67d;</i>导出
+                        </button>
+                    </div>
+                     <div class="layui-inline">
+                        <button id="bug_set" class="layui-btn icon-btn" type="button">
+                            <i class="layui-icon">&#xe620;</i>异常配置
+                        </button>
+                        <button id="ds_set" class="layui-btn icon-btn" type="button">
+                            <i class="layui-icon">&#xe620;</i>账号限量配置
+                        </button>
+                    </div>
+                    
+                </div>
+            </form>
+            <hr>
+            <!-- 数据表格 -->
+            <table id="tbBasicTable" lay-filter="tbBasicTable"></table>
+        </div>
+    </div>
+</div>
+<!-- 固定底部按钮 -->
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tbBasicTbBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">修改</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<!-- 表格轮询列 -->
+<script type="text/html" id="userTblx">
+    <input type="checkbox" lay-filter="userTblxCk" value="{{d.id}}" lay-skin="switch" lay-text="开启|关闭" {{d.land_lx==1?'checked':''}} style="display: none;"/>
+    <p style="display: none;">{{d.land_lx==1?'开启':'关闭'}}</p>
+</script>
+
+<!-- 支付测试 -->
+<script type="text/html" id="land_demo">
+   {{# if(d.land_lx==1){ }}
+        {{# if(d.jkstate==1){ }}
+        <button type="button" lay-event="pay" class="layui-btn layui-btn-xs" >发起测试</button>
+        {{# }else if(d.jkstate==0){ }}
+        ---
+        {{# } }}
+   {{# }else if(d.land_lx==0){ }}
+   ---
+   {{# } }}
+</script>
+
+<!--异常配置页-->
+<script type="text/html" id="bugset">
+     <form id="dialogEditForm1" lay-filter="bugset" class="layui-form model-form no-padding">
+        <div class="model-form-body" style="max-height: 250px;overflow-y: initial;">
+        
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">异常次数:</label>
+                <div class="layui-input-block">
+                    <input name="bug_num" type="number" placeholder="账号异常次数" class="layui-input" lay-verify="required" required />
+                </div>
+            </div>
+			<div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">触发操作:</label>
+                <div class="layui-input-block">
+                    <select name="bug_type" lay-verify="required" required>
+                        <option value="1">关闭轮询（存入异常）</option>
+                        <option value="2">删除账号（直接删除）</option>
+                    </select>
+                </div>
+            </div>
+			
+        </div>
+        <div class="layui-form-item text-right model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+            <button class="layui-btn" lay-filter="bug_save" lay-submit>保存</button>
+        </div>
+    </form>
+</script>
+
+<!--限量配置页-->
+<script type="text/html" id="dsset">
+     <form id="dialogEditForm1" lay-filter="dsset" class="layui-form model-form no-padding">
+        <div class="model-form-body" style="max-height: 290px;overflow-y: initial;">
+           
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">设定时间:</label>
+                <div class="layui-input-block">
+                    <input name="ds_time" placeholder="设定时间（单位为分钟,设置为0表示关闭限量功能）" class="layui-input" lay-verify="required" required />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">限量模式:</label>
+                <div class="layui-input-block">
+                    <select name="ds_type" lay-verify="required" required>
+                        <option value="0">已支付订单限量</option>
+                        <option value="1">新创建订单限量</option>
+                    </select>
+                </div>
+            </div>
+			<div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">限量数量:</label>
+                <div class="layui-input-block">
+                    <input name="ds_num" placeholder="请输入限量订单数量,设置为0表示关闭限量功能" class="layui-input" lay-verify="required" required />
+                </div>
+            </div>
+			
+        </div>
+        <div class="layui-form-item text-right model-form-footer">
+            <button class="layui-btn layui-btn-primary" type="button" ew-event="closeDialog">取消</button>
+            <button class="layui-btn" lay-filter="ds_save" lay-submit>保存</button>
+        </div>
+    </form>
+</script>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer', 'form','admin','table', 'util', 'dropdown','baseTable','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var dropdown = layui.dropdown;
+        var admin = layui.admin;
+        var notice = layui.notice;
+        var t1 ;//定时器
+        
+        /* 渲染表格 */
+        var insTb = table.render({
+            elem: '#tbBasicTable',
+            url: "user_list",
+            page: true,
+            limit: 10,
+            cellMinWidth: 100,
+            escape: true,
+            cols: [[
+                {type: 'radio'},
+                {field: 'mid', title: 'MID', align: 'left',width:100,align:'center'},
+                {field: 'username', title: '账号备注', align: 'left',width:150,align:'center'},
+                {field: 'typec_name', title: '所属通道', align: 'left',width:150,align:'center'},
+                {field: 'r_money', title: '日限额/今充值', width:120,align:'center',
+                templet: function(d){
+                    return d.r_money+'元/'+d.jr_pay+'元'
+                }},
+                {field: 'z_money', title: '总限额/总充值', width:120,align:'center',
+                templet: function(d){
+                    return d.z_money+'元/'+d.z_pay+'元'
+                }},
+                {field: 'zr_pay', title: '昨日充值',align:'center',width:100,
+                templet: function(d){
+                    return d.zr_pay+'元'
+                }},
+                {field: 'type', title: '支付模式', align: 'center', width: 100,templet: function(d){
+                    if(d.type == 1){
+                      return '<span style="color:blue">支付宝</span>';  
+                    }else if(d.type == 0){
+                      return '<span style="color:blue">微信</span>';  
+                    }else if(d.type == 2){
+                      return '<span style="color:blue">Q Q</span>';  
+                    }
+                }},
+                {title: '支付测试',toolbar: '#land_demo',align:'center',width:100},
+                {field: 'ds', title: '限量数据', width: 140,align:'center',templet: function(d){
+                    if(d.ds_time!=0 || d.ds_num!=0){
+                      return d.ds_time+'分钟/'+d.ds_num+'单';
+                    }else{
+                      return '---';  
+                    }
+                }},
+                {field: 'ds', title: '限量状态', width: 100,align:'center',templet: function(d){
+                    if(d.ds_time != 0 ){
+                    if(d.ds_status == 0){
+                      return '正常';  
+                    }else{
+                      return '<span style="color:red">限量中</span>';  
+                    }
+                    }else{
+                      return '未设定限量';    
+                    }
+                }},
+                 {field: 'ds', title: '限量模式', width: 100,align:'center',templet: function(d){
+                    if(d.ds_time != 0 ){
+                    if(d.ds_type == 0){
+                      return '<span style="color:green">已支付订单</span>';  
+                    }else if(d.ds_type == 1){
+                      return '<span style="color:blue">新创建订单</span>';  
+                    }
+                    }else{
+                      return '未设定限量';    
+                    }
+                }},
+                {field: 'create_date', title: '创建时间',minWidth:120,align:'center',templet: function(d){
+                    if(d.create_date!=0){return util.toDateString(d.create_date*1000)}else{return '---'}
+                }},
+                {field: 'jkstate', title: '监控', width: 100,align:'center',templet: function(d){
+                    if(d.jkstate==1){
+                      return '<span style="color:green">正常</span>';  
+                    }else{
+                      return '<span style="color:red">异常</span>'; 
+                    }
+                }},
+                {field: 'land_lx', title: '轮询', templet: '#userTblx', width: 100,align:'center'},
+                {title: '操作', toolbar: '#tbBasicTbBar',align:'center',minWidth:150}
+            ]]
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tbBasicTbSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(tbBasicTable)', function (obj) {
+            if (obj.event === 'edit') { // 修改
+                edit_land(obj)
+            } else if (obj.event === 'del') { // 删除
+                del_land(obj)
+            } else if (obj.event === 'pay') { // 发起测试
+                pay_demo(obj)
+            } 
+        });
+        
+         /* 修改轮询状态 */
+        form.on('switch(userTblxCk)', function (obj) {
+            var loadIndex = layer.load();
+            admin.req('status_save', {
+                id: obj.elem.value,
+                land_lx: obj.elem.checked ? 1 : 0
+            }, function (res) {
+                layer.close(loadIndex);
+                console.log(res);
+                if (res.code ==1) {
+                    //notice.msg(res.msg, {icon: 1});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'post');
+        });
+      
+        // 导出excel
+        $('#tbBasicExportBtn').click(function () {
+            var checkRows = table.checkStatus('tbBasicTable');
+            if (checkRows.data.length === 0) {
+                notice.msg('请选择要导出的数据', {icon: 3});
+            } else {
+                table.exportFile(insTb.config.id, checkRows.data, 'xls');
+            }
+        });
+        
+        // 限量配置
+        $('#ds_set').click(function () {
+            var checkRows = table.checkStatus('tbBasicTable');
+            if (checkRows.data.length === 0) {
+                notice.msg('请选择要设定限量的账号', {icon: 3});
+            } else {
+                console.log(checkRows.data);
+                showMode_ds(checkRows.data);
+            }
+        });
+        
+        // 异常配置
+        $('#bug_set').click(function () {
+            $.ajax({
+                type: "get",
+                dataType: "json",
+                url: "bug_set",
+                success: function (data) {
+                showMode(data);
+              }
+            });
+        });
+        
+        function pay_demo(obj){
+            layer.confirm('支付测试仅供测试能否正常发起支付使用,无实际回调作用，知晓请点击【确定】开始测试', {
+                shade: .1,
+                skin: 'layui-layer-admin'
+            }, function (i) {
+            layer.prompt({
+                formType: 0,
+                value: '',
+                title: '请输入测试金额'
+                
+            }, function(value, index, elem){
+                var loadIndex = layer.load();
+                admin.req('pay_demo', {
+                   mid: obj.data.mid,
+                   money: value
+                   }, function (res) {
+                        layer.close(loadIndex);
+                        console.log(res);
+                        window.clearTimeout(t1);//去掉定时器
+                        if(res.code == 1){
+                            if (res.data.code==1) {
+                                function check(orderId) {
+                                    admin.req('checkOrder',{orderId: orderId},function (res) {
+                                        console.log(res);
+                                        if (res.code == 1){
+                                            layer.closeAll('page');
+                                            admin.open({
+                                                type: 1,
+                                                title: false,
+                                                shadeClose:true,
+                                                scrollbar: false,
+                                                closeBtn: 0,
+                                                content: "<img src='__STATIC__assets/images/dsadasg.png' width='100%' height='100%'/>",
+                                            });
+                                        }else if(res.code == -1){
+                                            layer.closeAll('page');
+                                            admin.open({
+                                                type: 1,
+                                                title: false,
+                                                shadeClose:true,
+                                                scrollbar: false,
+                                                closeBtn: 0,
+                                                content: "<img src='__STATIC__assets/images/dgfgcc.gif' width='100%' height='100%'/>",
+                                            });
+                                        }else if(res.code == 0){
+                                            t1 = window.setTimeout(function(){check(orderId);},3000);
+                                        }
+                                    },'get');
+                                }
+                                layer.closeAll();
+                                t1 = window.setTimeout(check(res.data.data.order_id),3000);
+                                admin.open({
+                                    type: 1,
+                                    title: false,
+                                    shadeClose:true,
+                                    scrollbar: false,
+                                    closeBtn: 0,
+                                    content: "<img src='__STATIC__assets/images/dggeuu.gif' width='100%' height='100%'/>",
+                                    end: function(index, layero){ 
+                                        window.clearTimeout(t1);//去掉定时器
+                                        return false; 
+                                    } 
+                                });
+                                {if isMobile()}
+                                window.location.href = res.data.data.pay;
+                                {else /}
+                                window.open(res.data.data.pay,'_blank');
+                                {/if}
+                            }else{
+                                notice.msg(res.data.msg, {icon: 2});
+                            }
+                        }else{
+                          notice.msg(res.msg, {icon: 2,onOpened: function(){
+                                    {if isMobile()}
+                                    window.location.href = res.data;
+                                    {else /}
+                                    window.open(res.data,'_blank');
+                                    {/if}
+                                }
+                          });
+                          
+                        }
+                    }, 'post');
+                })
+                return false;
+             });        
+        }
+        
+        function edit_land(obj){
+            var layIndex = admin.open({
+                    type: 2,
+					title: '修改 '+ obj.data.username+' 帐号',
+					area: ['520px', '520px'],
+					content: 'land_edit?id='+obj.data.id,
+					data: { url: 'land_edit',data: obj.data },  // 使用data参数传值给弹窗页面
+					tpl: true,
+					end: function () {  // 监听弹窗关闭
+                    if (admin.getLayerData(layIndex, 'formOk')) {  // 判断表单操作成功标识
+                        notice.msg('修改 '+ obj.data.username+' 账号成功', {icon: 1});
+                        insTb.reload();  // 成功刷新表格
+                    }
+                }
+            });
+        }
+        
+        function del_land(obj){
+            layer.confirm('确定要删除吗？<span style="color:red">删除账号,账号相关的订单也会删除,可能造成您无法核对订单的情况</span>,已知晓请确认删除!', {
+                shade: .1,
+                skin: 'layui-layer-admin'
+                }, function (i) {
+                layer.close(i);
+                    var loadIndex = layer.load();
+                    admin.req('del_save', {
+                        id: obj.data.id
+                    }, function (res) {
+                        layer.close(loadIndex);
+                        console.log(res);
+                        if (res.code == 1) {
+                            notice.msg(res.msg, {icon: 1,onOpened: function(){
+                                    obj.del(); //删除
+                                    layer.close(res);
+                                }
+                            });
+                        } else {
+                            notice.msg(res.msg, {icon: 2});
+                        }
+                    }, 'post');
+                
+            });
+        }
+        
+        function showMode(mData){
+			admin.open({
+                type: 1,
+                title: '账号异常设置',
+                content: $('#bugset').html(),
+                success: function (layero, dIndex) {
+                  $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                  form.val('bugset',mData);
+                  form.render(null, 'bugset');
+                  form.on('submit(bug_save)', function (data) {
+						var loadIndex = layer.load();
+                        admin.req('bug_set', data.field, function (res) {
+                            layer.close(loadIndex);
+                            console.log(res);
+                            if (1 == res.code) {                                
+                                notice.msg(res.msg, {icon: 1});
+                                layer.closeAll('page');
+                            } else {
+                                notice.msg(res.msg, {icon: 2});
+                            }
+                        }, 'post');
+                        return false;
+                    });
+                }
+            });
+		}
+		
+		
+		function showMode_ds(mData){
+			admin.open({
+                type: 1,
+                title: '账号限量设置',
+				area: ['468px', '290px'],
+                content: $('#dsset').html(),
+                success: function (layero, dIndex) {
+                  $(layero).children('.layui-layer-content').css('overflow', 'visible');
+                  form.val('dsset',mData);
+                  form.render(null, 'dsset');
+                  form.on('submit(ds_save)', function (data) {
+                        data.field.id = mData[0].id;
+                        console.log(data.field);
+						var loadIndex = layer.load();
+                        admin.req('ds_save', data.field, function (res) {
+                            layer.close(loadIndex);
+                            console.log(res);
+                            if (1 == res.code) {                                
+                                notice.msg(res.msg, {icon: 1});
+                                layer.closeAll('page');
+                                insTb.reload({page: {curr: 1}}); 
+                            }else if(res.code==-1){
+                                notice.msg(res.msg, {icon: 2});
+                            }else{
+                                notice.msg(res.msg, {icon: 3});
+                            }
+                        }, 'post');
+                        return false;
+                    });
+                }
+            });
+		}
+
+    });
+</script>
+</body>
+</html>

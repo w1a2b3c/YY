@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  <base href=".">
+  <title>微信支付</title>
+  <style>
+    body {
+      background: #f1f1f1;
+      margin: 0;
+      font-family: "Roboto", "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    }
+    .weixin-header {
+      text-align: center;
+      padding: 15px 0;
+      width: 100%;
+      font-size: 20px;
+      background: white;
+      border-bottom: 2px solid #eee;
+    }
+    .weixin-header .weixin-header-title {
+      display: inline-block;
+    }
+    .weixin-amount {
+      margin-top: 20px;
+      background: white;
+      height: 150px;
+      border-bottom: 2px solid #eee;
+    }
+    .weixin-amount .weixin-icon {
+      display: inline-block;
+    }
+    .weixin-amount .weixin-amount-info {
+      text-align: center;
+    }
+    .weixin-amount .weixin-amount-detail {
+      display: inline-block;
+      width: 100%;
+      font-size: 60px;
+      font-weight: 800;
+      text-align: center;
+      padding-top: 10px;
+    }
+    .weixin-body {
+      margin-top: 30px;
+      width: 100%;
+    }
+    .weixin-body .weixin-qr {
+      width: 60%;
+      margin: 0 20%;
+    }
+    .weixin-body .weixin-qr-info {
+      text-align: center;
+      padding-top: 10px;
+    }
+    .weixin-action {
+      text-decoration: none;
+    }
+    .weixin-btn {
+      width: 80%;
+      margin: auto;
+      line-height: 30px;
+      font-size: 20px;
+      background: #5fb878;
+      color: white;
+      padding: 10px;
+      height: 30px;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .weixin-info {
+      text-align: center;
+      font-size: 15px;
+      margin-top: 30px;
+      color: #a9a9a9;
+    }
+  </style>
+</head>
+<body id="fukuan">
+<div class="weixin-header">
+  <div class="weixin-header-title">
+      <img style="width:100%;height:100%;" src="__STATIC__assets/pay/images/weixin.jpg" />
+  </div>
+</div>
+<div class="weixin-amount">
+  <div class="weixin-amount-info">
+    <div class="weixin-icon">
+      <br>
+    </div>
+    <div class="weixin-amount-detail"></div>
+  </div>
+</div>
+<div class="weixin-body">
+  <a href="{$data.mid_url|raw}" class="weixin-action" target="_blank">
+    <div class="weixin-btn">点击唤起支付</div>
+  </a>
+</div>
+<div class="weixin-info">
+  支付完成后，如需售后服务请联系客服
+</div>
+<script src="__STATIC__assets/pay/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__assets/pay/js/jweixin-1.0.0.js"></script>
+<script>
+  function imageBase64(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    var dataURL = canvas.toDataURL("image/png");
+    return dataURL;
+  }
+  function funcReadImgInfo() {
+    var imgs = [];
+    var imgObj = $(".weixin-body .weixin-qr");
+    for (var i = 0; i < imgObj.length; i++) {
+        imgs.push(imgObj.eq(i).attr('src'));
+        $("#fukuan").click(function() {
+            var nowImgurl = $(this).attr('src');
+            WeixinJSBridge.invoke("imagePreview", {
+                "urls": imgs,
+                "current": nowImgurl
+            });
+        });
+    }
+  }
+  function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split("&");
+    for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split("=");
+      if (pair[0] == variable) {
+        return pair[1];
+      }
+    }
+    return false;
+  }
+  
+  var myTimer;
+    function timer(intDiff) {
+        var i = 0;
+        i++;
+        var day = 0,
+            hour = 0,
+            minute = 0,
+            second = 0;//时间默认值
+        if (intDiff > 0) {
+            day = Math.floor(intDiff / (60 * 60 * 24));
+            hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+            minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+            second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+        }
+        if (minute <= 9) minute = '0' + minute;
+        if (second <= 9) second = '0' + second;
+        $('#hour_show').html('<s id="h"></s>' + hour + '');
+        $('#minute_show').html('<s></s>' + minute + '');
+        $('#second_show').html('<s></s>' + second + '');
+        if (hour <= 0 && minute <= 0 && second <= 0) {
+            qrcode_timeout()
+            clearInterval(myTimer);
+        }
+        speckText('请付款{$data.money|raw}元,注意不能多付或少付，请在规定时间内及时付款，失效请勿付款')
+        intDiff--;
+
+        myTimer = window.setInterval(function () {
+        i++;
+        var day = 0,
+            hour = 0,
+            minute = 0,
+            second = 0;//时间默认值
+        if (intDiff > 0) {
+            day = Math.floor(intDiff / (60 * 60 * 24));
+            hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+            minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+            second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+        }
+        if (minute <= 9) minute = '0' + minute;
+        if (second <= 9) second = '0' + second;
+        $('#hour_show').html('<s id="h"></s>' + hour + '');
+        $('#minute_show').html('<s></s>' + minute + '');
+        $('#second_show').html('<s></s>' + second + '');
+        if (hour <= 0 && minute <= 0 && second <= 0) {
+            qrcode_timeout()
+            clearInterval(myTimer);
+        }
+        intDiff--;
+        }, 1000);
+    }
+  
+  
+  
+
+  window.onload = function () {
+    var amount = '{$data.price|raw}';//金额
+    if (!amount) {
+      var div = document.querySelector(".weixin-amount");
+      div.style.display = 'none';
+    } else {
+      var div = document.querySelector(".weixin-amount-detail");
+      div.innerText = "￥" + amount;
+    }
+    var href = getQueryVariable("link");//浏览器外面转跳
+    if (href) {
+      href = decodeURIComponent(href);
+      top.location.replace(href);
+      var a = document.querySelector(".weixin-action");
+      a.rel = "noopener noreferrer";
+      if (navigator.userAgent.indexOf("MicroMessenger") > -1) {
+        alert("微信内不支持支付，请点右上角菜单，在手机浏览器中打开该页面");
+        a.href = 'javascript:alert("微信内不支持支付，请点右上角菜单，在手机浏览器中打开该页面");'
+      } else {
+        a.href = href;
+      }
+    } else {
+      var img64 = new Image();
+      img64.src='{:url("enQrcode","","html",true)}?url={$data.mid_url|raw}';
+      img64.onload=function(){
+          var img = imageBase64(img64);
+          if (img) {
+            var a = document.querySelector(".weixin-action");
+            a.style.display = 'none';
+            var body = document.querySelector(".weixin-body");
+            var qr = document.createElement("img");
+            qr.className = 'weixin-qr';
+            qr.src = '{:url("enQrcode","","html",true)}?url={$data.mid_url|raw}';
+            body.appendChild(qr);
+            var info = document.createElement("div");
+            info.className = 'weixin-qr-info';
+            info.style.color = '#FF0000';
+            body.appendChild(info);
+            var node = document.createTextNode("点击二维码，并长按识别二维码支付");
+            info.appendChild(node);
+            funcReadImgInfo();
+          }
+      }  
+    }
+  };
+</script>
+</body>
+</html>

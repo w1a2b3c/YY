@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /** 数据表格中的select尺寸调整 */
+        .layui-table-view .layui-table-cell .layui-select-title .layui-input {
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-select-title .layui-input {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-btn-xs {
+            height: 18px;
+            line-height: 18px;
+        }
+    </style>
+</head>
+<body onscroll="layui.admin.hideFixedEl();">
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 数据表格 -->
+            <table id="tbBasicTable" lay-filter="tbBasicTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer', 'form','laytpl','admin','table', 'util', 'dropdown','baseTable','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var dropdown = layui.dropdown;
+        var laytpl = layui.laytpl;
+        var admin = layui.admin;
+        var notice = layui.notice;
+        
+        /* 渲染表格 */
+        var insTb = table.render({
+            elem: '#tbBasicTable',
+            url: "yuedd_list",
+            page: true,
+            limit: 10,
+            escape: true,
+            cellMinWidth: 100,
+            cols: [[
+                {type: 'checkbox'},
+                {field: 'pid', title: '商户PID', align: 'center', minWidth:120},
+                {field: 'user', title: '商户账号', align: 'center', minWidth:140},
+                {field: 'money', title: '金额', align: 'center',templet: function(d){return d.money+'元'},minWidth:100},
+                {field: 'order', title: '订单号', minWidth:170, align: 'center'},
+                {field: 'create_date', title: '时间',align:'center', minWidth:170, templet: function (d) {
+                         if(d.create_date!=0){
+                             return util.toDateString(d.create_date*1000);
+                         }else{
+                             return '---'
+                         }  
+                    }
+                },
+                {field: 'state', title: '状态', minWidth:120, templet: function (d) {
+                        var strs = {
+                            1:'<span class="layui-badge">充值不到账</span>',
+                            2:'<span class="layui-badge layui-badge-green">充值到账</span>',
+                            3:'<span class="layui-badge layui-badge-gray">商户不存在</span>'
+                        };
+                        return strs[d.state];
+                    }, align: 'center'
+                }
+            ]]
+        });
+
+    });
+</script>
+</body>
+</html>

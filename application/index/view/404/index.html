@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+<title>系统维护中</title>
+  <link href="__STATIC__assets/images/favicon.ico" rel="icon">
+  <link rel="stylesheet" href="__STATIC__assets/404/css/style.css">
+</head>
+<body>
+<!-- Thanks to @xontab -->
+<div id="page">
+		<div id="container">
+			<h1>:(</h1>
+			<h2>{$data.ds_outr|raw}</h2>
+			<h2>完成 <span id="percentage">0</span>%</h2>
+			<div id="details">
+				<div id="qr">
+					<div id="image">
+					    {if condition="$data.web_kefu"}
+						<img src="https://www.lofter.com/genBitmaxImage?url={$data.web_kefu}" />
+						{else/}
+						<img src="https://www.lofter.com/genBitmaxImage?url={:url('/','','',true)}" />
+						{/if}
+					</div>
+				</div>
+				<div id="stopcode">
+					<h5 style="font-size: 16px;"><br>不好意思！可能页面对您造成了困恼，这其实是一个系统正在优化和上报故障信息而已！</h5>
+					{if condition="$data.web_kefu"}
+					<h5 style="font-size: 16px;">如需返回请复制链接或者手机扫描左侧二维码：{$data.web_kefu}</h5>
+					{else/}
+					<h5 style="font-size: 16px;">如需返回请复制链接或者手机扫描左侧二维码：{:url('/','','',true)}</h5>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+<!-- partial -->
+  <script  src="__STATIC__assets/404/js/script.js"></script>
+</body>
+</html>

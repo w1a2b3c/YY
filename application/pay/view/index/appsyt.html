@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{$data['name']}</title>
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <meta content="no-cache,must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta content="telephone=no, address=no" name="format-detection">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link href="__STATIC__assets/images/favicon.ico" rel="icon">
+    <!-- apple devices fullscreen -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Mobile Devices Support @end -->
+    <link rel="stylesheet" href="__STATIC__assets/pay/cashier/default/css/style.min.css" type="text/css">
+    <link rel="stylesheet" href="__STATIC__assets/pay/cashier/default/css/base.min.css">
+    <link href="__STATIC__assets/pay/cashier/default/css/layer.css" rel="stylesheet">
+
+</head>
+
+<body onselectstart="return true;" ondragstart="return false;" style="user-select: none;">
+
+<link rel="stylesheet" href="__STATIC__assets/pay/cashier/default/css/payOrder.min.css">
+
+<style>
+    .layui-layer-content {
+        max-width: 1.48rem !important;
+    }
+
+    .pay-gray {
+        background: #e5e5e5 !important;
+    }
+    .preselection-money{
+        flex:3;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        background: #fff;
+        padding: 0rem 0.02rem;
+    }
+    .preselection-money div{
+        margin: 0rem 0.07rem;
+        border-radius: 5px;
+        padding: 0.1rem 0.08rem;
+        overflow: hidden;
+        width: 100%;
+        white-space: nowrap;
+        text-overflow:ellipsis;
+        font-size: 0.17rem;
+        background: #f5f5f5;
+    }
+    .preselection-money div:active{
+        opacity: 0.6;
+    }
+    .preselection-money div.bghide{
+        background: #fff;
+    }
+    .preselection-money div.bghide:active{
+        opacity: 1;
+    }
+</style>
+
+<section class="pay-container-box bg-white pay-simplified">
+    <!-- 门店名称展示 -->
+    <div class="shop-name-box">
+        {if condition="$data.jh_mdtx or ''"}
+        <div class="portrait">
+            <img src="{$data['jh_mdtx']}"/>
+        </div>
+        {/if}
+        {if condition="$data.jh_mdcm or ''"}
+        <span class="shop-name-display single-overflow" id="shop-name-display">{$data['jh_mdcm']}</span>
+        {/if}
+    </div>
+    <!-- 金额输入（账单金额等） -->
+    <div class="input-money-box">
+        <div class="js-amount-input pay-amount-box display-flex flex-between-lr flex-horizontal-center s-open-keyboard"
+             data-id="mainMoney">
+            <label class="pay-money-desc" for="">金额</label>
+            <span class="js-input-hint no-pay-amount hide">￥0.00</span>
+            <span class="js-input-amount has-pay-amount">
+                <em>￥</em>
+                <em id="mainMoney"></em>
+                <em class="pay-money-cursor"></em>
+            </span>
+        </div>
+    </div>
+    <!-- 预选金额 -->
+    {if condition="$data['preselection_switch']"}
+        {for start="0" end="6"}
+            {if condition="$i==0 or $i==3"}
+                <div class="preselection-money">
+            {/if}
+                {if condition="isset($data['jh_je'][$i]) && trim($data['jh_je'][$i])!='' && $data['jh_je'][$i]!=NULL"}
+                <div class="js-preselection" data-number="{$data['jh_je'][$i]}" style="margin: {$i>=3 && $i<6?'0.09':'0'}rem 0.07rem">￥{$data['jh_je'][$i]}</div>
+                {else}
+                <div class="bghide"></div>
+                {/if}
+            {if condition="$i==2 or $i==5"}
+                </div>
+            {/if}
+        {/for}
+    {/if}
+    <!-- 支付方式 -->
+    {if condition="$data.pay_type eq 'alipay'"}
+    <div class="pay-way-box">
+        <div class="active pay-way-item display-flex flex-between-lr flex-horizontal-center" data-type="alipay">
+            <span>
+                <i class=""></i>
+                <em class="pay-way-desc"><img style="vertical-align:middle;" src="__STATIC__assets/images/alipay.ico" height="18">&nbsp;支付宝</em>
+            </span>
+            <i class="select-icon"></i>
+        </div>
+    </div>
+    {elseif condition="$data.pay_type eq 'weixin'" /}
+    <div class="pay-way-box">
+        <div class="active pay-way-item display-flex flex-between-lr flex-horizontal-center" data-type="weixin">
+            <span>
+                <i class=""></i>
+                <em class="pay-way-desc"><img style="vertical-align:middle;" src="__STATIC__assets/images/weixin.ico" height="18">&nbsp;微信支付</em>
+            </span>
+            <i class="select-icon"></i>
+        </div>
+    </div>
+    {elseif condition="$data.pay_type eq 'qq'" /}
+    <div class="pay-way-box">
+        <div class="active pay-way-item display-flex flex-between-lr flex-horizontal-center" data-type="qq">
+            <span>
+                <i class=""></i>
+                <em class="pay-way-desc"><img style="vertical-align:middle;" src="__STATIC__assets/images/qq.ico" height="18">&nbsp; QQ钱包</em>
+            </span>
+            <i class="select-icon"></i>
+        </div>
+    </div>
+    {else /}
+    <div class="pay-way-box">
+        <div class="active pay-way-item display-flex flex-between-lr flex-horizontal-center" data-type="alipay">
+            <span>
+                <i class=""></i>
+                <em class="pay-way-desc"><img style="vertical-align:middle;" src="__STATIC__assets/images/alipay.ico" height="18">&nbsp;支付宝</em>
+            </span>
+            <i class="select-icon"></i>
+        </div>
+        <div class="pay-way-item display-flex flex-between-lr flex-horizontal-center" data-type="weixin">
+            <span>
+                <i class=""></i>
+                <em class="pay-way-desc"><img style="vertical-align:middle;" src="__STATIC__assets/images/weixin.ico" height="18">&nbsp;微信支付</em>
+            </span>
+            <i class="select-icon"></i>
+        </div>
+        <div class="pay-way-item display-flex flex-between-lr flex-horizontal-center" data-type="qq">
+            <span>
+                <i class=""></i>
+                <em class="pay-way-desc"><img style="vertical-align:middle;" src="__STATIC__assets/images/qq.ico" height="18">&nbsp;QQ钱包</em>
+            </span>
+            <i class="select-icon"></i>
+        </div>
+    </div>
+    {/if}
+    <!--备注 部分 start-->
+    <div class="s-remark">
+        <div class="s-remark-port">
+            <span class="s-remark-title">备注:</span>
+            <input class="s-remark-info" id="remark" type="text" placeholder="备注信息" maxlength="16">
+        </div>
+    </div>
+    <!--按钮 部分 start-->
+    <div class="s-pay-btn" id="s-pay-btn" style="background:#6e00ff">确认支付</div>
+    <!--按钮 部分 end-->
+</section>
+
+<!-- 自定义键盘 start 加上x-mask-show显示-->
+<div id="keyBoard" class="x-mask-box x-mask-show" data-id="mainMoney"
+     style="z-index:9;background-color: rgba(0,0,0,0);height:auto;" v-cloak="">
+    <div class="x-slide-box pop-up-show">
+        <div class="x-key-board">
+            <div class="row">
+                <div class="item js-key" data-number="1">1</div>
+                <div class="item js-key" data-number="4">4</div>
+                <div class="item js-key" data-number="7">7</div>
+                <div class="item js-key" data-number=".">.</div>
+            </div>
+            <div class="row" style="width: 50%">
+                <div class="display-flex">
+                    <div class="item js-key" style="width: 50%" data-number="2">2</div>
+                    <div class="item js-key" style="width: 50%" data-number="3">3</div>
+                </div>
+                <div class="display-flex">
+                    <div class="item js-key" style="width: 50%" data-number="5">5</div>
+                    <div class="item js-key" style="width: 50%" data-number="6">6</div>
+                </div>
+                <div class="display-flex">
+                    <div class="item js-key" style="width: 50%" data-number="8">8</div>
+                    <div class="item js-key" style="width: 50%" data-number="9">9</div>
+                </div>
+                <div class="display-flex">
+                    <div class="item js-key" data-number="0">0</div>
+                    <div class="item js-key s-pack-key" data-number="down"><i class="keyboard-icon"></i></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="item no-border-right js-key x-key-del" data-number="×">
+                    <i class="back-icon"></i>
+                </div>
+                <div class="item no-border-bottom no-border-right x-key-ok" data-number="ok" id="confirm_pay" style="background: #6e00ff">
+                    <span style="line-height: 1.2; font-size: .2rem;">确<br>认<br>支<br>付</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 自定义键盘 end -->
+<form id="pay_form" action="sytpay" method="post">
+    <input type="hidden" value="1" name="sytpay"/>
+    <input type="hidden" value="{$data['id']}" name="pid" >
+    <input type="hidden" value="{:base64_encode($data['key'])}" name="key"/>
+    <input type="hidden" id="pay_type" name="type">
+    <input type="hidden" id="pay_money" name="money">
+    <input type="hidden" id="pay_remarks" name="remarks">
+</form>
+<script type="text/javascript" src="__STATIC__assets/pay/cashier/default/js/jquery.min.js"></script>
+<script src="__STATIC__assets/pay/cashier/default/js/layer.min.js"></script>
+<script type="text/javascript" src="__STATIC__assets/pay/cashier/default/js/payOrderSimpfilied.min.js"></script>
+</body>
+</html>

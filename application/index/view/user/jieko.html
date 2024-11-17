@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+ <head> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+  <title>{$data.name}</title> 
+  <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css" /> 
+  <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318" /> 
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]--> 
+    <style>
+        /** 应用列表样式 */
+        .application-list-item {
+            background-color: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .application-list-item:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+        }
+
+        .application-list-item .application-list-item-header {
+            padding: 16px 12px 0 12px;
+        }
+
+        .application-list-item .application-list-item-header .head {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .application-list-item .application-list-item-header > h2 {
+            color: #333;
+            font-size: 18px;
+            display: inline-block;
+        }
+
+        .application-list-item .application-list-item-body {
+            padding: 12px 12px 12px 50px;
+            font-size: 0;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item {
+            display: inline-block;
+            width: 50%;
+            font-size: 26px;
+            color: #666;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item .text-num-item-title {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item small {
+            font-size: 16px;
+        }
+
+        .application-list-item .application-list-item-tool {
+            font-size: 0;
+            background-color: #FAFAFA;
+            border-top: 1px solid #e8e8e8;
+            padding: 10px 0 5px 0;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .application-list-item .application-list-item-tool .application-list-item-tool-item {
+            display: inline-block;
+            width: 25%;
+            font-size: 18px;
+            text-align: center;
+            color: #999;
+            border-right: 1px solid #e8e8e8;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .application-list-item .application-list-item-tool .application-list-item-tool-item:last-child {
+            border-right: none;
+        }
+        /** // 应用列表样式结束 */
+    </style>
+ </head> 
+ <body> 
+  <!-- 正文开始 --> 
+  <div class="layui-fluid ew-console-wrapper"> 
+   <div class="layui-row layui-col-space15"> 
+    <div class="layui-col-xs12 layui-col-md4"> 
+     <!-- 填充内容 --> 
+     
+     <div class="layui-card layui-form-pane"> 
+      <div class="layui-card-header">接口信息</div> 
+      <div class="layui-card-body"> 
+       <div class="layui-form-item"> 
+        <label class="layui-form-label">商户PID</label> 
+        <div class="layui-input-block"> 
+         <input type="text" name="pid" value="{$data.id}" autocomplete="off" placeholder="商户PID" class="layui-input text-center" readonly="" onclick="fuzhi(this)" /> 
+        </div> 
+       </div> 
+       <div class="layui-form-item"> 
+        <label class="layui-form-label">商户KEY</label> 
+        <div class="layui-input-block"> 
+         <input type="text" name="key" id="key_id" value="***已隐藏***" autocomplete="off" placeholder="商户KEY" class="layui-input text-center" readonly="" onclick="fuzhi(this)" /> 
+        </div> 
+       </div> 
+       <input type="button" class="layui-btn layui-btn-xs" value="显示商户KEY" id="displaykey" style="border: none;outline:none;" /> 
+       <input type="button" id="GeneratingKey" value="重新生成商户KEY" class="layui-btn layui-btn-danger layui-btn-xs" style="border: none;outline:none;" /> 
+      </div> 
+     </div>
+     
+     <div class="layui-card layui-form-pane"> 
+      <div class="layui-card-header">支付网关</div> 
+      <div class="layui-card-body"> 
+       <div class="layui-form-item"> 
+        <label class="layui-form-label">网址</label> 
+        <div class="layui-input-block"> 
+         <input type="text" style="margin-top:5px" value="{:url('/','','',config('url_api'))}" autocomplete="off" placeholder="网关网址" class="layui-input text-center" readonly="" onclick="fuzhi(this)" /> 
+        </div> 
+       </div> 
+       </div> 
+     </div> 
+     
+     <div class="layui-card layui-form-pane"> 
+      <div class="layui-card-header">接口文档</div> 
+      <div class="layui-card-body"> 
+      
+        <div class="layui-card"> 
+           <div class="layui-card-body">
+                 接口：<span id="duijei">{$data.jdfds}</span><br>模式：<input type="button" class="layui-btn layui-btn-xs" value="切换" id="sanshuann" style="border: none;outline:none;" />
+            </div> 
+        </div>
+        <div class="application-list-item">
+            <div class="application-list-item-header">
+                <img class="head" src="__STATIC__assets/images/lcxkvf.jpg"/>
+                <h2>PHP语言</h2>
+            </div>
+            <div class="application-list-item-body">
+                <div class="text-num-item">
+                    <div class="text-num-item-title">默认（系统）</div>
+                    <div class="text-num-item-text">
+                    <a style="color:red;" href="__STATIC__assets/MRpay-PHP.zip">    
+                        <img class="ew-head-list" lay-tips="下载默认文档压缩包" lay-offset="0,-8px" width="25" src="__STATIC__assets/images/fdsasdsa.jpg"/>
+                    </a>    
+                    </div>
+                </div>
+                <div class="text-num-item">
+                    <div class="text-num-item-title">易支付</div>
+                    <div class="text-num-item-text">
+                    <a style="color:red;" href="__STATIC__assets/Epay-PHP.zip">    
+                        <img class="ew-head-list" lay-tips="下载易支付文档压缩包" lay-offset="0,-8px" width="25" src="__STATIC__assets/images/fdsasdsa.jpg"/>
+                    </a>    
+                    </div>
+                </div>
+            </div>
+        </div>
+     
+      </div> 
+     </div>
+     
+     <div class="layui-card layui-form-pane"> 
+        <div class="layui-card-header">收银台</div> 
+            <div class="layui-card-body">
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <form class="layui-form" id="formAdvForm" lay-filter="formAdvForm">
+                        <div class="layui-form-item"> 
+                            <label class="layui-form-label">二维码</label>
+                            <div class="layui-input-block">
+                                <select name="jh_ewm" lay-verify="required" required>
+                                    <option value="1" {if condition="$data.jh_ewm eq '1'"} selected = "selected" {/if}>模板1</option>
+                                    <option value="2" {if condition="$data.jh_ewm eq '2'"} selected = "selected" {/if}>模板2</option>
+                                    <option value="3" {if condition="$data.jh_ewm eq '3'"} selected = "selected" {/if}>模板3</option>
+                                    <option value="4" {if condition="$data.jh_ewm eq '4'"} selected = "selected" {/if}>模板4</option>
+                                    <option value="5" {if condition="$data.jh_ewm eq '5'"} selected = "selected" {/if}>模板5</option>
+                                    <option value="6" {if condition="$data.jh_ewm eq '6'"} selected = "selected" {/if}>模板6</option>
+                                    <option value="7" {if condition="$data.jh_ewm eq '7'"} selected = "selected" {/if}>模板7</option>
+                                    <option value="8" {if condition="$data.jh_ewm eq '8'"} selected = "selected" {/if}>模板8</option>
+                                    <option value="9" {if condition="$data.jh_ewm eq '9'"} selected = "selected" {/if}>模板9</option>
+                                    <option value="10" {if condition="$data.jh_ewm eq '10'"} selected = "selected" {/if}>模板10</option>
+                                    <option value="11" {if condition="$data.jh_ewm eq '11'"} selected = "selected" {/if}>模板11</option>
+                                    <option value="12" {if condition="$data.jh_ewm eq '12'"} selected = "selected" {/if}>模板12</option>
+                                    <option value="13" {if condition="$data.jh_ewm eq '13'"} selected = "selected" {/if}>模板13</option>
+                                    <option value="14" {if condition="$data.jh_ewm eq '14'"} selected = "selected" {/if}>模板14</option>
+                                    <option value="15" {if condition="$data.jh_ewm eq '15'"} selected = "selected" {/if}>模板15</option>
+                                    <option value="16" {if condition="$data.jh_ewm eq '16'"} selected = "selected" {/if}>模板16</option>
+                                    <option value="17" {if condition="$data.jh_ewm eq '17'"} selected = "selected" {/if}>模板17</option>
+                                    <option value="18" {if condition="$data.jh_ewm eq '18'"} selected = "selected" {/if}>模板18</option>
+                                    <option value="19" {if condition="$data.jh_ewm eq '19'"} selected = "selected" {/if}>模板19</option>
+                                    <option value="20" {if condition="$data.jh_ewm eq '20'"} selected = "selected" {/if}>模板20</option>
+                                    <option value="21" {if condition="$data.jh_ewm eq '21'"} selected = "selected" {/if}>模板21</option>
+                                    <option value="22" {if condition="$data.jh_ewm eq '22'"} selected = "selected" {/if}>模板22</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">门店头像</label> 
+                            <div class="layui-input-block">
+                                <input name="jh_mdtx" value="{$data.jh_mdtx}" placeholder="请填写门店头像链接|可留空" class="layui-input text-center" required/>
+                            </div>
+                        </div>
+                        <div class="layui-form-item"> 
+                            <label class="layui-form-label">门店名称</label> 
+                            <div class="layui-input-block">
+                                <input name="jh_mdcm" value="{$data.jh_mdcm}" placeholder="请填写门店头像|可留空" class="layui-input text-center" required/>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">预选金额</label>
+                            <div class="layui-input-block">
+                                <input name="jh_je" value="{$data.jh_je}" placeholder="每个金额用“|”隔开，留空则关闭预选金额功能" class="layui-input text-center" required/>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">电脑版</label>
+                            <div class="layui-input-block">
+                                <input type="text" id='fsdrf' autocomplete="off" placeholder="收银台链接" class="layui-input text-center" readonly="" onclick="fuzhi(this)" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机版</label>
+                            <div class="layui-input-block">
+                                <img src="data:image/jpg/png/gif;base64,{$data.ewm}" width="100%" height="100%" />
+                            </div>
+                        </div>
+                        <div class="form-group-bottom text-right">
+                            <button class="layui-btn layui-btn-primary" type="button" onclick="downloadImg()">&emsp;生成收银台图片&emsp;</button>
+                            <button class="layui-btn" lay-filter="formAdvSubmit" lay-submit>&emsp;提交&emsp;</button>
+                        </div>
+                    </form>
+                </div>    
+            </div>
+        </div>   
+    </div> 
+    <div class="layui-col-xs12 layui-col-md8"> 
+     <!-- 填充内容 --> 
+     <div class="layui-card"> 
+      <div class="layui-card-header">接口文档</div> 
+      <div class="layui-card-body"> 
+      {$data.text|raw}
+    </div>   
+   </div> 
+  </div> 
+  <!-- js部分 --> 
+  <script type="text/javascript" src="__STATIC__assets/js/jquery@1.11.3.js"></script>
+  <script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script> 
+  <script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script> 
+  <script>
+  
+  layui.use(['layer', 'form', 'laydate', 'notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var notice = layui.notice;
+        
+        /* 监听表单提交 */
+        form.on('submit(formAdvSubmit)', function (data) {
+            var loadIndex = layer.msg('加载中',{icon: 16,shade: 0.01});
+                $.post('jhsyt', data.field, function (res) {
+                layer.close(loadIndex);
+                if (1 == res.code) {   
+                    notice.msg(res.msg, {icon: 1,onOpened: function(){
+                            location.reload();  // 成功刷新
+                        }
+                    });
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+            return false;
+        });
+    
+        $('#sanshuann').click(function () {
+        	//layer.msg('加载中',{icon: 16,shade: 0.01});
+        	//notice.msg('加载中', {icon: 4});
+			$.get('duijei', function(result){
+                if(result.code == '1'){
+                    notice.msg('加载中', {icon: 4,onOpened: function(){
+                            location.reload();  // 成功刷新
+                        }
+                    });
+                }else{
+                   notice.msg(result.msg, {icon: 2});
+                }
+			});
+        	
+        });
+        
+        $('#displaykey').click(function () {
+        	$('#key_id').val("{$data.key}");
+        	$('#displaykey').remove();
+        });
+        
+        $('#GeneratingKey').click(function () {
+        	 layer.confirm('你真的要重新生成KEY吗？这样会造成已对接过的网站发起支付和异步通知失败！', {
+		            btn: ['确认','取消'] //按钮
+        	        }, function(){
+        	            var loadIndex = layer.msg('加载中',{icon: 16,shade: 0.01});
+			            $.get('generatingkey', function(result){
+			                layer.close(loadIndex);
+      		            if(result.code == '1'){
+       		    	       notice.msg(result.msg, {icon: 1});
+       		    	       $('#displaykey').remove();
+       		    	       $('#key_id').val(result.data);
+              		    }else{
+                    	   notice.msg(result.msg, {icon: 2});
+              		    }
+			        });
+        	  });
+        });
+    });
+    function fuzhi(s) {
+            s.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            layer.msg("复制成功");
+    }
+    $('#fsdrf').val(unescape("{$data.fsdrf}"));
+    function downloadImg(){
+        window.open("{:url('createPoster')}",'','scrollbars=yes,status=yes')
+    }
+     
+</script>  
+ </body>
+</html>

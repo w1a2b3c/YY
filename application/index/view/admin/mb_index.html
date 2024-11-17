@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+        /** 项目列表样式 */
+        .project-list-item {
+            background-color: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .project-list-item:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+        }
+
+        .project-list-item .project-list-item-cover {
+            width: 100%;
+            height: 220px;
+            display: block;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+        }
+
+        .project-list-item-body {
+            padding: 20px;
+        }
+
+        .project-list-item .project-list-item-body > h2 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .project-list-item .project-list-item-text {
+            height: 44px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .project-list-item .project-list-item-desc {
+            position: relative;
+        }
+
+        .project-list-item .project-list-item-desc .time {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .project-list-item .project-list-item-desc .ew-head-list {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .ew-head-list .ew-head-list-item {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+            margin-left: -10px;
+        }
+
+        .ew-head-list .ew-head-list-item:first-child {
+            margin-left: 0;
+        }
+
+        /** // 项目列表样式结束 */
+       
+    </style>
+</head>
+<body>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button id="updateAll" class="layui-btn layui-btn-sm" lay-tips="刷新通道插件">刷新模板</button>
+                        <button id="test8" class="layui-btn layui-btn-sm layui-btn-normal icon-btn" lay-tips="上传模板插件[zip]"><i class="layui-icon">&#xe681;</i>上传模板[zip]</button>
+                    </div>
+                </div>
+                <!-- 进度的回调 -->
+                <div style="display: none;" class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="demo">
+                  <div class="layui-progress-bar" lay-percent="0%"></div>
+                </div>
+            <hr>    
+            <div class="layui-row layui-col-space10" id="demoCardList1"></div>
+            <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 项目模板 -->
+<script type="text/html" id="demoCardItem1">
+    <div class="layui-col-md4">
+        <div class="project-list-item">
+            <img class="project-list-item-cover" lay-tips="模板样图" src="{{d.img}}"/>
+            <div class="project-list-item-body">
+                <h2 class="text-center text-primary	" lay-tips="模板名称">{{d.title}}</h2>
+                <a href="{{d.website}}" target="view_frame"><h4 class="text-center text-danger" lay-tips="模板作者">{{d.author}} - {{d.name}}</h4></a>
+                <br>
+                <div class="project-list-item-text layui-text text-center" lay-tips="模板介绍">{{d.description}}</div>
+                <div class="project-list-item-desc">
+                    <span class="time text-warning" lay-tips="模板版本">{{d.version}}</span>
+                    <div class="ew-head-list">
+                        {{# if(d.state==1){ }}
+                        <a class="layui-btn icon-btn layui-btn-xs layui-bg-green" lay-tips="安装模板" lay-event="install">安装</a>
+                        {{# }else{ }}
+                           {{# if(d.shiyong==1){ }}
+                           <a class="layui-btn icon-btn layui-btn-xs" lay-tips="使用模板" lay-event="shiyong">使用</a>
+                           <a class="layui-btn icon-btn layui-btn-xs layui-bg-red" lay-tips="卸载模板" lay-event="uninstall">卸载</a>
+                           {{# }else{ }}
+                           <a class="layui-btn icon-btn layui-btn-xs layui-bg-black" lay-tips="取消模板" lay-event="quxiao">取消</a>
+                           {{# } }}
+                        {{# } }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer','admin', 'dataGrid','form', 'element', 'dropdown','notice','upload'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var dataGrid = layui.dataGrid;
+        var form = layui.form;
+        var element = layui.element;
+        var admin = layui.admin;
+        var notice = layui.notice;
+        var upload = layui.upload;
+        
+        /** 应用 */
+        var ins = dataGrid.render({
+            elem: '#demoCardList1',  // 容器
+            templet: '#demoCardItem1',  // 模板
+            url: 'mb_index_list',  // 数据接口
+            loadMore: {limit: 3,noMoreText: '',text: '更多模板',class: 'text-primary'}  // 开启加载更多
+        });
+        
+        dataGrid.on('item(demoCardList1)', function (obj) {
+            if(obj.data.state == 1){
+                install(obj);
+            }else if(obj.data.state == 2){
+                if(obj.data.shiyong == 1){
+                    shiyong(obj);
+                }else if(obj.data.shiyong == 2){
+                    quxiao(obj);
+                }
+            }
+            
+        });
+        
+        dataGrid.on('tool(demoCardList1)', function (obj) {
+            if (obj.event == 'install') { // 安装
+                install(obj);
+            } else if (obj.event == 'uninstall') { // 卸载
+                uninstall(obj);
+            } else if (obj.event == 'shiyong') { // 使用
+                shiyong(obj);
+            } else if (obj.event == 'quxiao') { // 取消
+                quxiao(obj);
+            }
+              
+        });
+        
+        /* 上传模板[zip] */
+        upload.render({
+            elem: '#test8'
+            ,url: 'unzip_file' //改成您自己的上传接口
+            ,multiple: true
+            ,accept: 'file'
+            ,exts: 'zip' //只允许上传压缩文件
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                $('.layui-progress.layui-progress-big').show();
+                element.progress('demo', '0%'); //进度条复位
+                notice.msg('上传中', {icon: 4});
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                notice.destroy();
+                notice.msg('上传失败', {icon: 2});
+            }
+            ,done: function(res){
+                if(res.code == 1){
+                    notice.msg(res.msg, {icon: 1,onOpened: function(){
+                            location.reload();
+                        }
+                    });
+                }else{
+                    notice.msg(res.msg, {icon: 2});
+                }
+                uploadInst.upload();
+            }
+            ,progress: function(n, elem, res, index){
+                element.progress('demo', n + '%'); //可配合 layui 进度条元素使用
+                if(n == 100){
+                    notice.destroy();
+                    $('.layui-progress.layui-progress-big').hide();
+                    //notice.msg('上传完毕', {icon: 1});
+                }
+           }
+        });
+        
+        /* 刷新通道 */
+        $('#updateAll').click(function () {
+            updateAll()
+        });
+        function updateAll(){
+            $.post('mb_index_updateAll', function (res) {
+                layer.closeAll('loading');
+                if (res.code == 1) {
+                    notice.msg(res.msg, {icon: 1,onOpened: function(){
+                            location.reload();  // 成功刷新
+                        }
+                    });
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+        
+        function install(obj){
+            layer.load(2);
+            $.post('mb_index_install', {
+                id: obj.data.id
+            }, function (res) {
+                layer.closeAll('loading');
+                if (res.code == 1) {
+                    obj.update({state: 2});  // 修改当前item
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+        
+        function uninstall(obj){
+            layer.load(2);
+            $.post('mb_index_uninstall', {
+                id: obj.data.id
+            }, function (res) {
+                layer.closeAll('loading');
+                if (res.code == 1) {
+                    obj.update({state: 1});  // 修改当前item
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+        
+        function shiyong(obj){
+            layer.load(2);
+            $.post('mb_index_shiyong', {
+                id: obj.data.id
+            }, function (res) {
+                layer.closeAll('loading');
+                if (res.code == 1) {
+                    obj.update({shiyong: 2});  // 修改当前item
+                    
+                } else if (res.code == 2) {
+                    notice.msg(res.msg, {icon: 5,displayMode: 2});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+        
+        function quxiao(obj){
+            layer.load(2);
+            $.post('mb_index_quxiao', {
+                id: obj.data.id
+            }, function (res) {
+                layer.closeAll('loading');
+                if (res.code == 1) {
+                    obj.update({shiyong: 1});  // 修改当前item
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+
+    });
+</script>
+</body>
+</html>

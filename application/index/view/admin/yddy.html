@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /** 数据表格中的select尺寸调整 */
+        .layui-table-view .layui-table-cell .layui-select-title .layui-input {
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-select-title .layui-input {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-btn-xs {
+            height: 18px;
+            line-height: 18px;
+        }
+    </style>
+</head>
+<body onscroll="layui.admin.hideFixedEl();">
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格工具栏 -->
+            <form class="layui-form toolbar table-tool-mini">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label w-auto">商户账号:</label>
+                        <div class="layui-input-inline">
+                            <input name="user" class="layui-input" type="text" placeholder="请输入商户账号"/>
+                        </div></div>
+                        <div class="layui-inline">
+                        <label class="layui-form-label w-auto">收款账号:</label>
+                        <div class="layui-input-inline">
+                            <input name="mid_name" class="layui-input" type="text" placeholder="请输入收款账号"/>
+                        </div></div>
+                        <div class="layui-inline">
+                        <label class="layui-form-label w-auto">订单号:</label>
+                        <div class="layui-input-inline">
+                            <input name="order_id" class="layui-input" type="text" placeholder="请输入订单号"/>
+                        </div></div>
+                         <div class="layui-inline">
+                        <label class="layui-form-label w-auto">支付状态:</label>
+                        <div class="layui-input-inline">
+                            <select name="state">
+                                <option value="">选择状态</option>
+                                <option value="1">未支付</option>
+                                <option value="2">已支付</option>
+                                <option value="3">超时</option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="layui-inline">
+                        <label class="layui-form-label w-auto">支付方式:</label>
+                        <div class="layui-input-inline">
+                            <select name="type">
+                                <option value="">选择类型</option>
+                                <option value="alipay">支付宝</option>
+                                <option value="weixin">微信</option>
+                                <option value="qq">Q Q</option>
+                            </select>
+                        </div>
+                        </div>
+                    <div class="layui-inline" style="padding-right: 110px;">
+                        <button class="layui-btn icon-btn" lay-filter="tbBasicTbSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                        <button id="tbBasicExportBtn" class="layui-btn icon-btn" type="button">
+                            <i class="layui-icon">&#xe67d;</i>导出
+                        </button>
+                    </div>
+                </div>
+              <div class="table-tool-mini" style="margin-bottom:10px">
+              <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" type="button" id="del_1" ><i class="layui-icon">&#xe640;</i>删除上周订单</button>
+              <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" type="button" id="del_2"><i class="layui-icon">&#xe640;</i>删除上月订单</button>
+              <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" type="button" id="del_3"><i class="layui-icon">&#xe640;</i>删除去年订单</button>
+              <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" type="button" id="del_4"><i class="layui-icon">&#xe640;</i>删除过期订单</button>
+              <button class="layui-btn layui-btn-sm layui-btn-danger icon-btn" type="button" id="del_5"><i class="layui-icon">&#xe640;</i>删除全部订单</button>
+              </div>
+            </form>
+            <!-- 数据表格 -->
+            <table id="tbBasicTable" lay-filter="tbBasicTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tbBasicTbBar">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/html" id="eDialogTbState">
+     {{# if(d.state==2){ }}
+     {{# if(d.api_state==2){ }}
+     <span class="layui-badge layui-badge-green">已回调</span>
+     {{# }else if(d.api_state==1){ }}
+     <span class="layui-badge layui-badge-blue">未请求</span>
+     {{# }else if(d.api_state==3){ }}
+     <span class="layui-badge layui-badge-grat" lay-event="checkList">回调失败</span>
+     {{# } }}
+    {{# }else if(d.state==1){ }}
+    ---
+    {{# }else if(d.state==3){ }}
+    ---
+    {{# } }}
+</script>
+
+<script id="eDialogCheckDialog" type="text/html">
+    <div style="padding: 25px 25px 25px 30px;">
+        {{d.api_jieguo}}
+    </div>
+</script>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer', 'form','laytpl','admin','table', 'util', 'dropdown','baseTable','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var dropdown = layui.dropdown;
+        var laytpl = layui.laytpl;
+        var admin = layui.admin;
+        var notice = layui.notice;
+        
+        /* 渲染表格 */
+        var insTb = table.render({
+            elem: '#tbBasicTable',
+            url: "orders_list",
+            page: true,
+            limit: 15,
+            cellMinWidth: 100,
+            cols: [[
+                {type: 'checkbox'},
+                {field: 'pid', title: '商户PID', align: 'center',width:100},
+                {field: 'order_id', title: '平台 | 通道', align: 'center',templet: function(d){
+                    return d.order_id+'<br>'+d.pay_id
+                },minWidth:120},
+                {field: 'mid_name', title: '收款账号', align: 'center',width:120},
+                {field: 'mid', title: 'MID',minWidth:80,align:'center'},
+                {field: 'mid_type', title: '所属通道',minWidth:120,align:'center'},
+                {field: 'type', title: '支付方式',minWidth:120,align:'center', templet: function (d) {
+                        var strs = {
+                            alipay:'<span class="layui-badge layui-badge-gray" style="color:blue">支付宝</span>',
+                            weixin:'<span class="layui-badge layui-badge-gray" style="color:blue">微信</span>',
+                            qq:'<span class="layui-badge layui-badge-gray" style="color:blue">Q Q</span>'
+                        };
+                        return strs[d.type];
+                    }
+                },
+                {field: 'record', title: '附加信息',minWidth:120,align:'center',templet: function(d){
+                    if(d.record){return d.record}else{return '---'}
+                }},
+                {field: 'out_trade_no', title: '商户订单号',minWidth:120,align:'center',templet: function(d){
+                    if(d.out_trade_no){return d.out_trade_no}else{return '---'}
+                }},
+                {field: 'name', title: '商品名称',minWidth:120,align:'center',templet: function(d){
+                    if(d.name){return d.name}else{return '---'}
+                }},
+                {field: 'sitename', title: '网站名称',minWidth:120,align:'center',templet: function(d){
+                    if(d.sitename){return d.sitename}else{return '---'}
+                }},
+                {field: 'param', title: '扩展参数',minWidth:120,align:'center',templet: function(d){
+                    if(d.param){return d.param}else{return '---'}
+                }},
+                {field: 'money', title: '金额', align: 'center',templet: function(d){return d.money+'元'},width:100},
+                {field: 'sxf', title: '手续费', align: 'center',templet: function(d){
+                    if(d.sxf!=0){return d.sxf+'元'}else{return '---'}
+                    
+                },width:110},
+                {field: 'ip', title: '交易IP',minWidth:100,align:'center'},
+                {field: 'refer', title: '同步|异步',minWidth:120,align:'center', templet: function (d) {
+                         if(d.refer){
+                             return d.refer+'<br>'+d.notify;
+                         }else{
+                             return '---'
+                         }  
+                    }
+                },
+                {field: 'pay_date', title: '创建|支付|回调|过期',minWidth:155,align:'center', templet: function (d) {
+                         if(d.pay_date!=0){
+                             return util.toDateString(d.create_date*1000)+'<br>'+util.toDateString(d.pay_date*1000)+'<br>'+util.toDateString(d.pay_time*1000)+'<br>'+util.toDateString(d.create_time*1000);
+                         }else{
+                             return '---'
+                         }  
+                    }
+                },
+                {field: 'state', title: '状态', templet: function (d) {
+                        var strs = {
+                            1:'<span class="layui-badge">未支付</span>',
+                            2:'<span class="layui-badge layui-badge-green">已支付</span>',
+                            3:'<span class="layui-badge layui-badge-gray">订单超时</span>'
+                        };
+                        return strs[d.state];
+                    }, align: 'center'
+                },
+                {toolbar: '#eDialogTbState', align: 'center', title: '回调'},
+                {title: '操作', toolbar: '#tbBasicTbBar', align: 'center', minWidth: 80}
+            ]]
+        });
+
+        /* 表格搜索 */
+        form.on('submit(tbBasicTbSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+
+        /* 表格工具条点击事件 */
+        table.on('tool(tbBasicTable)', function (obj) {
+            var data = obj.data; // 获得当前行数据
+            var layEvent = obj.event;
+            if (obj.event === 'del') { // 删除
+                del(data);
+            } else if (layEvent == 'checkList') {
+                openCheckList(data);
+            } 
+            dropdown.hideAll();
+        });
+        
+        $('#del_1').click(function () {
+           del_kuai(1); 
+       });
+       $('#del_2').click(function () {
+           del_kuai(2);
+       });
+       $('#del_3').click(function () {
+           del_kuai(3);
+       });
+       $('#del_4').click(function () {
+           del_kuai(4);
+       });
+        $('#del_5').click(function () {
+           del_kuai(5);
+       });
+        $('#del_6').click(function () {
+           del_kuai(6);
+       });
+       
+        /* 快捷删除 */
+        
+        function del_kuai(obj) {
+           
+            if(obj==1){
+                var msg='您确定要删除上周订单数据吗？';
+            }else if(obj==2){
+                var msg='您确定要删除上月订单数据吗？';
+            }else if(obj==3){
+                var msg='您确定要删除去年订单数据吗？';
+            }else if(obj==4){
+                var msg='您确定要删除过期订单数据吗？';
+            }else if(obj==5){
+                var msg='您确定要删除全部订单数据吗？';
+            }
+            
+            layer.confirm(msg, {
+                skin: 'layui-layer-admin',
+                shade: .1
+            }, function (i) {
+                layer.close(i);
+                var loadIndex = layer.load(2);
+                $.get("orders_del_type", {
+                    type: obj,
+                }, function (res) {
+                    layer.close(loadIndex);
+                    if (res.code === 1) {
+                        notice.msg(res.msg, {icon: 1});
+                        insTb.reload({page: {curr: 1}});
+                    } else {
+                        notice.msg(res.msg, {icon: 2});
+                    }
+                }, 'json');
+            });
+                
+        }
+        
+		function del(data){
+            layer.confirm('确认要删除该订单吗？', {
+                shade: .1,
+                skin: 'layui-layer-admin'
+                }, function (i) {
+                layer.close(i);
+                    layer.load(2);
+                    $.get('orders_del', {
+                        id: data.id
+                    }, function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 1) {
+                            notice.msg(res.msg, {icon: 1});
+                            insTb.reload({page: {curr: 1}});
+                        } else {
+                            notice.msg(res.msg, {icon: 2});
+                        }
+                    }, 'json');
+           });
+        }
+        
+         // 回调内容弹窗
+        function openCheckList(d) {
+            laytpl(eDialogCheckDialog.innerHTML).render(d, function (html) {
+                admin.open({
+                    type: 1,
+                    title: '回调返回详情',
+                    content: html
+                });
+            });
+        }
+
+        // 导出excel
+        $('#tbBasicExportBtn').click(function () {
+            var checkRows = table.checkStatus('tbBasicTable');
+            if (checkRows.data.length === 0) {
+                notice.msg('请选择要导出的数据', {icon: 3});
+            } else {
+                table.exportFile(insTb.config.id, checkRows.data, 'xls');
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

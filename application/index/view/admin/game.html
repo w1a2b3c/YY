@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+        /** 渠道列表样式 */
+        .application-list-item {
+            background-color: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .application-list-item:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+        }
+
+        .application-list-item .application-list-item-header {
+            padding: 16px 12px 0 12px;
+        }
+
+        .application-list-item .application-list-item-header .head {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .application-list-item .application-list-item-header > h2 {
+            color: #333;
+            font-size: 18px;
+            display: inline-block;
+        }
+
+        .application-list-item .application-list-item-body {
+            padding: 12px 12px 12px 50px;
+            font-size: 0;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item {
+            display: inline-block;
+            width: 50%;
+            font-size: 26px;
+            color: #666;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item .text-num-item-title {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item small {
+            font-size: 16px;
+        }
+
+        .application-list-item .application-list-item-tool {
+            font-size: 0;
+            background-color: #FAFAFA;
+            border-top: 1px solid #e8e8e8;
+            padding: 10px 0 5px 0;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .application-list-item .application-list-item-tool .application-list-item-tool-item {
+            display: inline-block;
+            width: 33.3333333%;
+            font-size: 18px;
+            text-align: center;
+            color: #999;
+            border-right: 1px solid #e8e8e8;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .application-list-item .application-list-item-tool .application-list-item-tool-item:last-child {
+            border-right: none;
+        }
+
+        /** // 应用列表样式结束 */
+        .alert {
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .alert-info {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+        }
+        .alert-dismissable, .alert-dismissible {
+            padding-right: 35px;
+        }
+        .alert {
+                padding: 15px;
+                margin-bottom: 20px;
+                border: 1px solid transparent;
+                border-radius: 4px;
+        }
+       
+    </style>
+</head>
+<body>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <button id="tdAll" class="layui-btn layui-btn-sm" lay-tips="刷新通道插件">刷新通道</button>
+                    </div>
+                </div>
+            <hr>  
+            <div class="layui-row layui-col-space30" id="demoCardList2"></div>
+            <hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 应用模板 -->
+<script type="text/html" id="demoCardItem2">
+    <div class="layui-col-md3">
+            {{# if(d.state==1){ }}
+            <div class="application-list-item" lay-tips="已开启">
+            {{# }else{ }}
+            <div class="application-list-item" lay-tips="已关闭">
+            {{# } }}
+            <div class="application-list-item-header">
+                <img class="head" src="{{d.game_img}}"/>
+                <h2>{{d.game_name}}</h2>
+            </div>
+            <div class="application-list-item-body">
+                <div class="text-num-item">
+                    <div class="text-num-item-title">本月总收</div>
+                    <div class="text-num-item-text">
+                      {{d.by_pay}}
+                        <small>元</small>
+                    </div>
+                </div>
+                <div class="text-num-item">
+                    <div class="text-num-item-title">上月总收</div>
+                    <div class="text-num-item-text">{{d.sy_pay}} <small>元</small></div>
+                </div>
+            </div>
+            <div class="application-list-item-tool">
+                <span class="application-list-item-tool-item" lay-event="add">
+                    {{# if(d.dsadsa=='1'){ }}
+                    <i class="layui-icon text-primary" lay-tips="通道标识" lay-offset="0,-8px" style="font-size: 14px;color:red">{{d.game_dm}}</i>
+                    {{# }else{ }}
+                    <i class="layui-icon text-primary" lay-tips="{{d.game_dm}}" lay-offset="0,-8px" style="font-size: 14px;color:red">通道标识</i>
+                    
+                    {{# } }}
+                </span>
+                <span class="application-list-item-tool-item" lay-event="list">
+                    <i class="layui-icon text-primary" lay-tips="通道账号" lay-offset="0,-8px" style="font-size: 14px;">账号管理</i>
+                </span>
+                <span class="application-list-item-tool-item" lay-event="cy">
+                    {{# if(d.state==1){ }}
+                    <i class="layui-icon layui-icon-play text-primary" lay-tips="通道状态" lay-offset="0,-8px" style="font-size: 14px;"> 已开启</i>
+                    {{# }else{ }}
+                    <i class="layui-icon layui-icon-pause text-primary" lay-tips="通道状态" lay-offset="0,-8px" style="font-size: 14px;"> 已关闭</i>
+                    {{# } }}
+                </span>
+               
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer','admin', 'dataGrid','form', 'element', 'dropdown','notice','upload'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var dataGrid = layui.dataGrid;
+        var form = layui.form;
+        var admin = layui.admin;
+        var notice = layui.notice;
+        var upload = layui.upload;
+        
+        /** 应用 */
+        var ins = dataGrid.render({
+            elem: '#demoCardList2',  // 容器
+            templet: '#demoCardItem2',  // 模板
+            url: 'game_list',  // 数据接口
+            loadMore: {limit: 8,noMoreText: '',text: '更多通道',class: 'text-primary'}  // 开启加载更多
+        });
+        
+        dataGrid.on('item(demoCardList2)', function (obj) {
+            cy(obj);
+        });
+        
+        dataGrid.on('tool(demoCardList2)', function (obj) {
+            if (obj.event === 'add') {
+                obj.update({dsadsa: '1'});
+            } else if (obj.event === 'list') {
+                list_game(obj);
+            } else if (obj.event === 'cy') {
+                cy(obj);
+            }
+              
+        });
+        
+        /* 上传通道[zip] */
+        upload.render({
+            elem: '#test8'
+            ,url: 'unzip_file' //改成您自己的上传接口
+            ,multiple: true
+            ,accept: 'file'
+            ,done: function(res){
+                console.log(res)
+                if(res.code == 1){
+                    notice.msg(res.msg, {icon: 1,onOpened: function(){
+                            tdAll();
+                        }
+                    });
+                }else{
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }
+            ,progress: function(n, elem, res, index){
+                var percent = n + '%' //获取进度百分比
+                notice.msg(percent, {icon: 5,timeout: 1000});
+           }
+        });
+        
+        /* 刷新通道 */
+        $('#tdAll').click(function () {
+            tdAll()
+        });
+        function tdAll(){
+            $.post('game_tdAll', function (res) {
+                layer.closeAll('loading');
+                if (res.code == 1) {
+                    notice.msg(res.msg, {icon: 1,onOpened: function(){
+                            location.reload();  // 成功刷新
+                        }
+                    });
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+        
+        /* 账号管理 */
+        function list_game(obj){
+            admin.open({
+                type: 2,
+                title: '管理 '+ obj.data.game_name+' 帐号',
+				area: ['80%', '80%'],
+                content: 'land?game_dm='+obj.data.game_dm
+            });
+        }
+        
+        /* 修改通道状态 */
+        function cy(obj){
+            var loadIndex = layer.load(2);
+            $.post('game_save', {
+                id: obj.data.id,
+                active: obj.data.state ? 0 : 1
+            }, function (res) {
+                layer.close(loadIndex);
+                if (res.code ==1) {
+                    obj.update({state: obj.data.state ? 0 : 1});  // 修改当前item
+                    notice.msg(res.msg, {icon: 1,displayMode: 2});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+        }
+
+    });
+</script>
+</body>
+</html>

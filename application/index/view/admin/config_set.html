@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <style>
+        #formAdvForm .layui-form-item {
+            margin-top: 20px;
+            margin-bottom: 0;
+        }
+
+        #formAdvForm .layui-form-item .layui-inline {
+            margin-bottom: 25px;
+            margin-right: 0;
+        }
+
+        .form-group-bottom {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 10px 20px;
+            background-color: #fff;
+            box-shadow: 0 -1px 2px 0 rgba(0, 0, 0, .05);
+        }
+    </style>
+</head>
+<body>
+<!-- 正文开始 -->
+<form class="layui-form" id="formAdvForm" lay-filter="formAdvForm">
+    <div class="layui-fluid" style="padding-bottom: 75px;">
+        <div class="layui-card">
+            <div class="layui-card-header">其他配置</div>
+            <div class="layui-card-body">
+                <div class="layui-form-item layui-row">
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">在线充值:</label>
+                        <div class="layui-input-inline">
+                           <select name="ds_zaioc" lay-verify="required" required>
+                           <option value="1" {if condition="$data.ds_zaioc eq '1'"} selected = "selected" {/if}>打开</option>
+                           <option value="2" {if condition="$data.ds_zaioc eq '2'"} selected = "selected" {/if}>关闭</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">是否开放商户前台余额在线充值模式</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">支付跳转:</label>
+                        <div class="layui-input-inline">
+                           <select name="ds_zhto" lay-verify="required" required>
+                           <option value="1" {if condition="$data.ds_zhto eq '1'"} selected = "selected" {/if}>打开</option>
+                           <option value="2" {if condition="$data.ds_zhto eq '2'"} selected = "selected" {/if}>关闭</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">是否开启支付浏览器跳转</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">商户注册:</label>
+                        <div class="layui-input-inline">
+                           <select name="ds_user" lay-verify="required" required>
+                           <option value="1" {if condition="$data.ds_user eq '1'"} selected = "selected" {/if}>开启</option>
+                           <option value="2" {if condition="$data.ds_user eq '2'"} selected = "selected" {/if}>关闭</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">是否开放商户注册功能</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">商户注册关闭提示:</label>
+                        <div class="layui-input-inline">
+                          
+                            <textarea name="ds_txet" placeholder="输入商户注册关闭提示" class="layui-textarea" lay-vertype="tips">{$data.ds_txet}</textarea>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">&lt;br&gt; = 换行 <br>当商户注册状态为关闭，此项设置生效</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">网站状态:</label>
+                        <div class="layui-input-inline">
+                           <select name="ds_hfw" lay-verify="required" required>
+                           <option value="1" {if condition="$data.ds_hfw eq '1'"} selected = "selected" {/if}>开启</option>
+                           <option value="2" {if condition="$data.ds_hfw eq '2'"} selected = "selected" {/if}>关闭</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">是否关闭网站状态</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">网站关闭提示:</label>
+                        <div class="layui-input-inline">
+                          
+                            <textarea name="ds_outr" placeholder="输入支付网关关闭提示" class="layui-textarea" lay-vertype="tips">{$data.ds_outr}</textarea>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">当网站状态为关闭，此项设置生效</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">邮箱通知:</label>
+                        <div class="layui-input-inline">
+                           <select name="web_mail" lay-verify="required" required>
+                           <option value="1" {if condition="$data.web_mail eq '1'"} selected = "selected" {/if}>打开</option>
+                           <option value="2" {if condition="$data.web_mail eq '2'"} selected = "selected" {/if}>关闭</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">是否开放邮箱通知</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">SMTP:</label>
+                        <div class="layui-input-inline">
+                            <input name="mail_smtp" placeholder="输入SMTP地址" class="layui-input" lay-verType="tips" value="{$data.mail_smtp}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">有效的邮件传输的协议</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">邮箱端口:</label>
+                        <div class="layui-input-inline">
+                            <input name="mail_port" placeholder="输入SMTP端口" class="layui-input" lay-verType="tips" value="{$data.mail_port}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">有效的邮件服务器端口号</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">邮箱账号:</label>
+                        <div class="layui-input-inline">
+                            <input name="mail_name" placeholder="输入SMTP邮箱账号" class="layui-input" lay-verType="tips" value="{$data.mail_name}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">有效的邮件服务器邮箱账号</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">邮箱密码:</label>
+                        <div class="layui-input-inline">
+                            <input name="mail_pwd" type="password" placeholder="输入SMTP邮箱密码" class="layui-input" lay-verType="tips" value="{$data.mail_pwd}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">有效的邮件服务器邮箱密码</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">邮件模板:</label>
+                        <div class="layui-input-inline">
+                           <select name="mail_email" lay-verify="required" required>
+                           <option value="1" {if condition="$data.mail_email eq '1'"} selected = "selected" {/if}>模板1</option>
+                           <option value="2" {if condition="$data.mail_email eq '2'"} selected = "selected" {/if}>模板2</option>
+                           <option value="3" {if condition="$data.mail_email eq '3'"} selected = "selected" {/if}>模板3</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">邮件通知发送内容模板</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">代理服务器:</label>
+                        <div class="layui-input-inline">
+                           <select name="ip_hfw" lay-verify="required" required>
+                           <option value="1" {if condition="$data.ip_hfw eq '1'"} selected = "selected" {/if}>打开</option>
+                           <option value="2" {if condition="$data.ip_hfw eq '2'"} selected = "selected" {/if}>关闭</option>
+                        </select>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">【<a href="//proxy.horocn.com" target="_blank">官方网站</a>】是否开启通道代理IP请求</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">隧道代理订单号:</label>
+                        <div class="layui-input-inline">
+                            <input name="ip_User" placeholder="输入代理IP订单号" class="layui-input" lay-verType="tips" value="{$data.ip_User}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">请到<a href="//proxy.horocn.com" target="_blank">官方网站</a>隧道代理订单查询订单号</div>
+                    </div>
+                    
+                    <div class="layui-inline layui-col-md12">
+                        <label class="layui-form-label layui-form-required">隧道代理密码:</label>
+                        <div class="layui-input-inline">
+                            <input name="ip_Pass" type="password" placeholder="输入代理IP密码" class="layui-input" lay-verType="tips" value="{$data.ip_Pass}" required/>
+                        </div>
+                         <div class="layui-form-mid layui-word-aux">请到<a href="//proxy.horocn.com" target="_blank">官方网站</a>隧道代理订单查询密码</div>
+                    </div>
+                    
+               </div>
+            </div>
+        </div>
+        <div class="form-group-bottom text-right">
+            <button type="reset" class="layui-btn layui-btn-primary">&emsp;重置&emsp;</button>
+            <button class="layui-btn" lay-filter="formAdvSubmit" lay-submit>&emsp;提交&emsp;</button>
+        </div>
+    </div>
+</form>   
+<!-- //表单结束 --> 
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer', 'form', 'laydate','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var notice = layui.notice;
+        
+        /* 监听表单提交 */
+        form.on('submit(formAdvSubmit)', function (data) {
+            var loadIndex = layer.load(2);
+                $.post('config_set', data.field, function (res) {
+                layer.close(loadIndex);
+                if (1 == res.code) {                                
+                    notice.msg(res.msg, {icon: 1});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                }
+            }, 'json');
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

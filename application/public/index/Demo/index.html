@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+ <html>
+ <head>
+ <meta charset="utf-8">
+  <!--标题-->
+ <title>{$data.web_name}</title>
+ <meta name="baidu-site-verification" content="b9lOcChmbf">
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+  <!--关键词-->
+ <meta name="keywords" content="{$data.web_keywords}">
+ <!--描述-->
+ <meta name="description" content="{$data.web_description}">
+ <!--浏览器小图标，如有，请上传-->
+ <link href="__STATIC__assets/images/favicon.ico" rel="icon">
+ <link rel="stylesheet" href="{$data.luji}/css/main.css">
+ <link rel="stylesheet" href="{$data.luji}/css/noscript.css"/>
+ </head>
+ <body>
+ <div id="wrapper">
+	<header id="header">
+	<!--<div class="logo">-->
+	  <!--头像地址-->
+		<!--<span class="icon fa-users" aria-hidden="true"></span>
+	</div>-->
+	<div class="content">
+		<div class="inner">
+          <!--名称-->
+			<h1>{$data.web_name}</h1>
+			<p>商户聚合免签约即时到帐收款解决方案</p>
+		</div>
+	</div>
+	<nav>
+	<ul>
+      <!--菜单-->
+		<li><a href="{:url('user/index')}">登录</a></li>
+		<!--<li><a href="#pay">测试</a></li>-->
+		<li><a href="#about">简介</a></li>
+	</ul>
+	</nav>
+	</header>
+	<div id="main">
+		<article id="about">
+			<h2 class="major">简介</h2>
+			<p> 聚合支付是商业变现必不可少的环节。{$data.web_name} 覆盖所有主流支付渠道，给你最简单、快捷的接入体验，同时提供简单易用的管理平台，让你可以集中进行跨渠道的交易管理和财务管理。{$data.web_name} 不是简单的聚合支付通道和路由，而是每一家企业内部的虚拟支付团队，致力于帮助企业快速、高效和高质量地建立「泛支付」模块，从容应对任何交易场景的挑战。</p>
+		</article>
+		<article id="pay">
+			<h2 class="major"><span>{$data.web_name}</span></h2>
+			<form method="post" action="javascript:pay();">
+				<div class="field half first">
+					<input type="text" name="money" id="money" value="1" />
+				</div>
+				<div class="field half first">
+                    <select id="type" >
+                       <option value="wxpay">微信</option>
+                       <option value="alipay">支付宝</option>
+                       <option value="qqpay">Q Q</option>
+                    </select>
+				</div>
+
+				<ul class="actions field">
+					<li><input type="submit" value="立即支付" class="special" /></li>
+				</ul>
+			</form>
+				<ul class="actions">
+					<li>
+					    <a href="{:url('user/index')}" style="border-bottom-color:transparent">
+					      <button>登录</button>
+					    </a>
+					    <a href="{:url('user/reg')}" style="border-bottom-color:transparent">
+					      <button>注册</button>
+					    </a>
+					</li>
+				</ul>
+		</article>
+	</div>
+	<footer id="footer">
+		<p class="copyright">&copy; 2021 <span>{$data.web_name}</span><a href="http://beian.miit.gov.cn" target="_blank"> {$data.web_beian}</a></p>
+		<!--<p class="copyright">本站源码由<a href="//shoquan.xyz/" target="_blank">呆呆</a>提供开源学习服务</p>-->
+	</footer>
+	<div id="cc-myssl-id" style="position: fixed;right: 0;bottom: 0;width: 65px;height: 65px;z-index: 99;"> 
+       <img src="{$data.luji}/images/myssl-id.png" alt="安全认证" style="width:100%;height:100%" />
+    </div>
+</div>
+<div id="bg"></div>
+<script src="{$data.luji}/js/jquery.min.js"></script>
+<script src="{$data.luji}/js/skel.min.js"></script>
+<script src="{$data.luji}/js/util.js"></script>
+<script src="{$data.luji}/js/main.js"></script>
+</body>
+</html>

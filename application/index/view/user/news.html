@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>{$news.title}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+</head>
+<body>
+  <div class="main-newsdate" style="text-align: left;">
+    <div class="layui-container">
+      <br>
+      <h1>{$news.title}</h1>
+      <p class="pushtime" style="font-size: 14px;
+    line-height: 52px;"> 发布时间：<span>{$news.create_date|date='Y-m-d H:i'}</span></p>
+      <hr>
+      {$news.text|raw}
+      <br>
+    </div> 
+  </div>
+<!--[if lt IE 9]>
+  <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+  <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</body>
+</html>

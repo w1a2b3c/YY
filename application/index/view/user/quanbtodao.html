@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+
+        /** 渠道列表样式 */
+        .application-list-item {
+            background-color: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .application-list-item:hover {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+        }
+
+        .application-list-item .application-list-item-header {
+            padding: 16px 12px 0 12px;
+        }
+
+        .application-list-item .application-list-item-header .head {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .application-list-item .application-list-item-header > h2 {
+            color: #333;
+            font-size: 18px;
+            display: inline-block;
+        }
+
+        .application-list-item .application-list-item-body {
+            padding: 12px 12px 12px 50px;
+            font-size: 0;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item {
+            display: inline-block;
+            width: 50%;
+            font-size: 26px;
+            color: #666;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item .text-num-item-title {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .application-list-item .application-list-item-body .text-num-item small {
+            font-size: 16px;
+        }
+
+        .application-list-item .application-list-item-tool {
+            font-size: 0;
+            background-color: #FAFAFA;
+            border-top: 1px solid #e8e8e8;
+            padding: 10px 0 5px 0;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .application-list-item .application-list-item-tool .application-list-item-tool-item {
+            display: inline-block;
+            width: 33.3333333%;
+            font-size: 18px;
+            text-align: center;
+            color: #999;
+            border-right: 1px solid #e8e8e8;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .application-list-item .application-list-item-tool .application-list-item-tool-item:last-child {
+            border-right: none;
+        }
+
+        /** // 应用列表样式结束 */
+        .alert {
+            -webkit-border-radius: 2px;
+            border-radius: 2px;
+        }
+
+        .alert-info {
+            color: #31708f;
+            background-color: #d9edf7;
+            border-color: #bce8f1;
+        }
+        .alert-dismissable, .alert-dismissible {
+            padding-right: 35px;
+        }
+        .alert {
+                padding: 15px;
+                margin-bottom: 20px;
+                border: 1px solid transparent;
+                border-radius: 4px;
+        }
+       
+    </style>
+</head>
+<body>
+
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-tab layui-tab-brief">
+            <div class="layui-tab-content">
+            {if condition="$data.gogao"}
+            <div class="alert alert-info alert-dismissible" role="alert">{$data.gogao|raw}</div>
+            {/if}
+            <form class="layui-form toolbar table-tool-mini">
+                <div class="layui-form-item">
+                     <div class="layui-inline">
+                        <label class="layui-form-label w-auto">通道名称:</label>
+                        <div class="layui-input-inline">
+                            <input name="game_name" class="layui-input" type="text" placeholder="输入通道名称查询"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="padding-right: 110px;">
+                        <button class="layui-btn icon-btn" lay-filter="tbBasicTbSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                       
+                    </div>
+                </div>
+            </form>
+            <hr>
+            <div class="layui-row layui-col-space30" id="demoCardList2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 应用模板 -->
+<script type="text/html" id="demoCardItem2">
+    <div class="layui-col-md3">
+        <div class="application-list-item">
+            <div class="application-list-item-header">
+                <img class="head" src="{{d.game_img}}"/>
+                <h2>{{d.game_name}}</h2>
+            </div>
+            <div class="application-list-item-body">
+                <div class="text-num-item">
+                    <div class="text-num-item-title">今日收入</div>
+                    <div class="text-num-item-text">
+                      {{d.jr_pay}}
+                        <small>元</small>
+                    </div>
+                </div>
+                <div class="text-num-item">
+                    <div class="text-num-item-title">昨日收入</div>
+                    <div class="text-num-item-text">{{d.zr_pay}} <small>元</small></div>
+                </div>
+            </div>
+            <div class="application-list-item-tool">
+                <span class="application-list-item-tool-item" lay-event="add">
+                    <i class="layui-icon" lay-tips="添加账号" lay-offset="0,-8px" style="font-size: 14px;"> 添加账号</i>
+                </span>
+                <span class="application-list-item-tool-item" lay-event="list">
+                    <i class="layui-icon" lay-tips="当前拥有{{d.land_count}}个账号" lay-offset="0,-8px" style="font-size: 14px;"> 账号管理({{d.land_count}})</i>
+                </span>
+                 <span class="application-list-item-tool-item" lay-event="cy">
+                  {{# if(d.game_my==0){ }}
+                    <i class="layui-icon layui-icon-star-fill" lay-tips="常用设置" lay-offset="0,-8px" style="font-size: 14px;color:red"> 取消常用</i>
+                  {{# }else if(d.game_my==1){ }}
+                    <i class="layui-icon layui-icon-star-fill" lay-tips="常用设置" lay-offset="0,-8px" style="font-size: 14px;"> 设为常用</i>
+                  {{# } }}
+                </span>
+               
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer','admin', 'dataGrid','form', 'element', 'dropdown','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var dataGrid = layui.dataGrid;
+        var form = layui.form;
+        var admin = layui.admin;
+        var notice = layui.notice;
+        
+        /** 应用 */
+        var ins = dataGrid.render({
+            elem: '#demoCardList2',  // 容器
+            templet: '#demoCardItem2',  // 模板
+            url: 'game_list',  // 数据接口
+            loadMore: {limit: 8,noMoreText: '',text: '更多通道',class: 'text-primary'}  // 开启加载更多
+        });
+        
+        /* 表格搜索 */
+        form.on('submit(tbBasicTbSearch)', function (data) {
+            
+            dataGrid.render({
+                elem: '#demoCardList2',  // 容器
+                templet: '#demoCardItem2',  // 模板
+                url: 'game_list',  // 数据接口
+                loadMore: {limit: 8,noMoreText: '',text: '更多通道',class: 'text-primary'},  // 开启加载更多
+                where: data.field
+            });
+            return false;
+        });
+        
+        dataGrid.on('tool(demoCardList2)', function (obj) {
+            if (obj.event === 'add') {
+                add_game(obj);
+            } else if (obj.event === 'list') {
+                list_game(obj);
+            } else if (obj.event === 'cy') {
+                cy(obj);
+            }
+              
+        });
+        
+        function list_game(obj){
+            admin.open({
+                type: 2,
+                title: '管理 '+ obj.data.game_name+' 帐号',
+				area: ['80%', '80%'],
+                content: 'land_list?id='+obj.data.id
+            });
+        }
+        
+        function cy(obj){
+            $.post('cy_set', 'id='+obj.data.id, function (res) {
+                 if (0 != res.code) {                                
+                     notice.msg(res.msg, {icon: 1,onOpened: function(){
+                            obj.update({game_my: obj.data.game_my ? 0 : 1});  // 修改当前item
+                        }
+                     });
+                 } else {
+                     notice.msg(res.msg, {icon: 2});
+                 }
+             }, 'json');
+        }
+        
+        function add_game(obj){
+            var layIndex = admin.open({
+                type: 2,
+				title: '添加 '+ obj.data.game_name+' 帐号',
+				area: ['520px', '520px'],
+				content: 'land_add?id='+obj.data.id,
+				data: { url: 'land_add' },  // 使用data参数传值给弹窗页面
+				tpl: true,
+                end: function () {  // 监听弹窗关闭
+                    if (admin.getLayerData(layIndex, 'formOk')) {  // 判断表单操作成功标识
+                        notice.msg('添加 '+ obj.data.game_name+' 账号成功', {icon: 1,onOpened: function(){
+                                var a = 1;
+                                var b = obj.data.land_count;
+                                var c = Number(a) + Number(b);
+                                obj.update({land_count: c});
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+</body>
+</html>

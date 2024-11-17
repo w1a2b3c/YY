@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <link href="__STATIC__assets/images/favicon.ico" rel="icon">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link href="__STATIC__assets/pay/css/pay.css" rel="stylesheet" media="screen">
+    <script src="__STATIC__assets/pay/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__assets/pay/js/layer.js"></script>
+        <title>请使用浏览器打开...</title>
+    <style>
+        html {
+            font-size: 20px;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            font-family: sans-serif;
+        }
+        .fui-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 0.7rem;
+            line-height: 1.5;
+            color: #333;
+            background: #fafafa;
+            overflow: hidden;
+        }
+        .fui-page-group {
+            display: block;
+        }
+        .fui-page.fui-page-current, .fui-page-group.fui-page-current {
+            overflow: hidden;
+        }
+        .layer .text {
+            height: 10rem;
+            width: 13rem;
+            color: #fff;
+            position: absolute;
+            top: 1.5rem;
+            left: 50%;
+            margin-left: -5.5rem;
+            font-size: 1.1rem;
+        }
+        .danmu {display: none;opacity: 0;}
+    </style>
+</head>
+
+<body ontouchstart>
+<div class='fui-page-group statusbar'>
+    <style>
+        .fui-content {background-color: #019fe8; background-image: url("__STATIC__assets/pay/images/640.png"); background-repeat: no-repeat; background-size: 100%; background-position: center 8rem;}
+        .layer {position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-image: url("__STATIC__assets/pay/images/TB2.png"); background-repeat: no-repeat; background-position: top right; background-size: 100%; color: #fff;}
+        .layer .text{height: 0rem; width: 60rem; color: #fff; position: absolute; top: 2.5remimg/; left: 35%; margin-left: -5.5rem; font-size: 0.9rem;}
+        .layer .dsa {height: 0rem; left: 0; right: 0; bottom: 15rem; position: absolute; font-size: 0.8rem; text-align: center;}
+        .layer .tip {height: 1rem; left: 0; right: 0; bottom: 3rem; position: absolute; font-size: 0.8rem; text-align: center;}
+    </style>
+
+    <div class='fui-page  fui-page-current order-create-page'>
+        <div class='fui-content'>
+            <div class="layer">
+                <div class="text">
+                    <p> 点击屏幕右上角[...]</p>
+                    <p> 用 [浏览器或Safari] 打开</p>
+                    <p> 才能正常使用支付并完成支付</p>
+                    <p> 不支持QQ或微信内置访问支付</p>
+                </div>
+                
+                <div class="tip">注: 支付完成后自动跳转</div>
+            
+            </div>
+        </div>
+    </div>
+</div>    
+<script>
+ var url = '{$data.url|raw}';//更改需要跳转的地址
+   //平台、设备和操作系统 
+   var system = { 
+        win: false, 
+        mac: false, 
+        xll: false, 
+        ipad: false 
+   }; 
+   //检测平台 
+   var p = navigator.platform; 
+       system.win = p.indexOf("Win") == 0; 
+       system.mac = p.indexOf("Mac") == 0; 
+       system.x11 = (p == "X11") || (p.indexOf("Linux") == 0); 
+       system.ipad = (navigator.userAgent.match(/iPad/i) != null) ? true : false; 
+       //跳转语句，如果是手机访问就自动跳转到wap.baidu.com页面 
+       if (system.win || system.mac || system.xll || system.ipad) { 
+           window.location.href = url;
+       } else { 
+       var ua = navigator.userAgent.toLowerCase(); 
+       if(ua.match(/MicroMessenger/i)=="micromessenger") { 
+           
+    //周期监听
+    var orderlst = setInterval("order()",3000+Math.floor(Math.random()*10));
+    
+    //订单监控  {订单监控}
+    function order(){
+    	$.post("checkOrder","orderId={$data.order_id|raw}",function (data) {
+    	    console.log(data);
+    	    if (data.code == 1 || data.code == 2){
+    	        window.clearInterval(orderlst);
+                window.location.href = data.data;
+            }else if(data.code == -1){
+                window.clearInterval(orderlst);
+                layer.msg(data.msg, {icon: 1});
+            }else if(data.data == "订单已过期"){
+                window.clearInterval(orderlst);
+                layer.msg(data.msg, {icon: 1});
+            }
+    	});
+    }
+           
+    }
+    
+   }
+</script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>{$data.name}</title>
+    <link rel="stylesheet" href="__STATIC__assets/libs/layui/css/layui.css"/>
+    <link rel="stylesheet" href="__STATIC__assets/module/admin.css?v=318"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /** 数据表格中的select尺寸调整 */
+        .layui-table-view .layui-table-cell .layui-select-title .layui-input {
+            height: 28px;
+            line-height: 28px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="lg"] .layui-table-cell .layui-select-title .layui-input {
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-select-title .layui-input {
+            height: 20px;
+            line-height: 20px;
+        }
+
+        .layui-table-view [lay-size="sm"] .layui-table-cell .layui-btn-xs {
+            height: 18px;
+            line-height: 18px;
+        }
+    </style>
+</head>
+<body onscroll="layui.admin.hideFixedEl();">
+<!-- 正文开始 -->
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <!-- 表格工具栏 -->
+            <form class="layui-form toolbar table-tool-mini">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label w-auto">商户账号:</label>
+                        <div class="layui-input-inline">
+                            <input name="user" class="layui-input" type="text" placeholder="请输入商户账号"/>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label w-auto">账号备注:</label>
+                        <div class="layui-input-inline">
+                            <input name="username" class="layui-input" type="text" placeholder="请输入账号备注"/>
+                        </div>
+                    </div>
+                    
+                        <div class="layui-inline" style="padding-right: 110px;">
+                        <button class="layui-btn icon-btn" lay-filter="tbBasicTbSearch" lay-submit>
+                            <i class="layui-icon">&#xe615;</i>搜索
+                        </button>
+                        <button id="tbBasicExportBtn" class="layui-btn icon-btn" type="button">
+                            <i class="layui-icon">&#xe67d;</i>导出
+                        </button>
+                       
+                    </div>
+                </div>
+            </form>
+            <!-- 数据表格 -->
+            <table id="tbBasicTable" lay-filter="tbBasicTable"></table>
+        </div>
+    </div>
+</div>
+
+<!-- 表格操作列 -->
+<script type="text/html" id="tbBasicTbBar">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<!-- 表格状态列 -->
+<script type="text/html" id="userTbState">
+    <input type="checkbox" lay-filter="userTbStateCk" value="{{d.id}}" lay-skin="switch"
+           lay-text="正常|锁定" {{d.state==1?'checked':''}} style="display: none;"/>
+    <p style="display: none;">{{d.state==1?'正常':'锁定'}}</p>
+</script>
+
+<!-- 表格轮询列 -->
+<script type="text/html" id="userTblx">
+    <input type="checkbox" lay-filter="userTblxCk" value="{{d.id}}" lay-skin="switch"
+           lay-text="开启|关闭" {{d.land_lx==1?'checked':''}} style="display: none;"/>
+    <p style="display: none;">{{d.land_lx==1?'开启':'关闭'}}</p>
+</script>
+
+<!-- js部分 -->
+<script type="text/javascript" src="__STATIC__assets/libs/layui/layui.js"></script>
+<script type="text/javascript" src="__STATIC__assets/js/common.js?v=318"></script>
+<script>
+    layui.use(['layer', 'form','admin','table', 'util', 'dropdown','baseTable','element','notice'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        var table = layui.table;
+        var util = layui.util;
+        var dropdown = layui.dropdown;
+        var admin = layui.admin;
+        var element = layui.element;
+        var notice = layui.notice;
+        
+        /* 渲染表格 */
+        var insTb = table.render({
+            elem: '#tbBasicTable',
+            url: "land_list?game_dm={$tada.game_dm}",
+            page: true,
+            limit: 10,
+            cellMinWidth: 100,
+            escape: true,
+            cols: [[
+                {type: 'checkbox'},
+               
+                {field: 'mid', title: 'MID', align: 'center',width:80},
+                {field: 'pid', title: '商户PID', align: 'center',width:120},
+                {field: 'username', title: '账号备注', align: 'center',width:160},
+                {field: 'type', title: '支付模式', align: 'center', width: 100,templet: function(d){
+                    if(d.type == 1){
+                      return '<span style="color:blue">支付宝</span>';  
+                    }else if(d.type == 0){
+                      return '<span style="color:blue">微信</span>';  
+                    }else if(d.type == 2){
+                      return '<span style="color:blue">Q Q</span>';  
+                    }
+                }},
+                {field: 'typec_name', title: '所属通道', align: 'center',width:160},
+                {field: 'r_money', title: '日限额', width:120,align:'center',
+                templet: function(d){
+                    return d.r_money+'元'
+                }},
+                {field: 'z_money', title: '总限额', width:120,align:'center',
+                templet: function(d){
+                    return d.z_money+'元'
+                }},
+                {field: 'jr_pay', title: '今日充值', width:120,align:'center',
+                templet: function(d){
+                    return d.jr_pay+'元'
+                }},
+                {field: 'zr_pay', title: '昨日充值', width:120,align:'center',
+                templet: function(d){
+                    return d.zr_pay+'元'
+                }},
+                {field: 'z_pay', title: '总充值', width:120,align:'center',
+                templet: function(d){
+                    return d.z_pay+'元'
+                }},
+                {field: 'jkstate', title: '监控', width: 100,align:'center',templet: function(d){
+                    if(d.jkstate==1){
+                      return '<span style="color:green">正常</span>';  
+                    }else{
+                      return '<span style="color:red">异常</span>'; 
+                    }
+                }},
+                {field: 'land_lx', title: '轮询', align: 'center', templet: '#userTblx', width: 100},
+                {field: 'state', title: '状态', align: 'center', templet: '#userTbState', width: 100},
+                {title: '操作', toolbar: '#tbBasicTbBar', align: 'center', minWidth: 80}
+            ]]
+        });
+        
+        /* 表格搜索 */
+        form.on('submit(tbBasicTbSearch)', function (data) {
+            insTb.reload({where: data.field, page: {curr: 1}});
+            return false;
+        });
+        
+        /* 表格工具条点击事件 */
+        table.on('tool(tbBasicTable)', function (obj) {
+            var data = obj.data; // 获得当前行数据
+            if (obj.event === 'del') { // 删除
+                del(data);
+            } 
+            dropdown.hideAll();
+        });
+        
+        function del(data){
+            layer.confirm('确认要删除该账号吗？', {
+                shade: .1,
+                skin: 'layui-layer-admin'
+                }, function (i) {
+                layer.close(i);
+                    layer.load(2);
+                    $.get('land_del', {
+                        id: data.id
+                    }, function (res) {
+                        layer.closeAll('loading');
+                        if (res.code == 1) {
+                            notice.msg(res.msg, {icon: 1,onOpened: function(){
+                                    insTb.reload({page: {curr: 1}});
+                                }
+                            });
+                        } else {
+                            notice.msg(res.msg, {icon: 2});
+                        }
+                    }, 'json');
+           });
+        }
+		
+		 /* 修改账户状态 */
+        form.on('switch(userTbStateCk)', function (obj) {
+            var loadIndex = layer.load(2);
+            $.get('land_status_save2', {
+                id: obj.elem.value,
+                ban: obj.elem.checked ? 1 : 0
+            }, function (res) {
+                layer.close(loadIndex);
+                if (res.code ==1) {
+                    notice.msg(res.msg, {icon: 1});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                    $(obj.elem).prop('checked', !obj.elem.checked);
+                    form.render('checkbox');
+                }
+            }, 'json');
+        });
+        
+         /* 修改轮询状态 */
+        form.on('switch(userTblxCk)', function (obj) {
+            var loadIndex = layer.load(2);
+            $.get('land_status_save1', {
+                id: obj.elem.value,
+                land_lx: obj.elem.checked ? 1 : 0
+            }, function (res) {
+                layer.close(loadIndex);
+                if (res.code ==1) {
+                    notice.msg(res.msg, {icon: 1});
+                } else {
+                    notice.msg(res.msg, {icon: 2});
+                    $(obj.elem).prop('checked', !obj.elem.checked);
+                    form.render('checkbox');
+                }
+            }, 'json');
+        });
+
+        // 导出excel
+        $('#tbBasicExportBtn').click(function () {
+            var checkRows = table.checkStatus('tbBasicTable');
+            if (checkRows.data.length === 0) {
+                notice.msg('请选择要导出的数据', {icon: 3});
+            } else {
+                table.exportFile(insTb.config.id, checkRows.data, 'xls');
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

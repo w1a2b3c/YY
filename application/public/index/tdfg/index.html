@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>{$data.web_name}</title>
+<meta charset="utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="Keywords" content="{$data.web_keywords}"/>
+<meta name="description" content="{$data.web_description}"/>
+<link href="__STATIC__assets/images/favicon.ico" rel="icon">
+<link rel="stylesheet" href="{$data.luji}/layui/css/layui.css?v=204"/>
+<link rel="stylesheet" href="{$data.luji}/css/main.css?v=204"/>
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+    .ew-banner {
+        max-width: 100vw;
+        overflow: hidden;
+        background: #fff;
+        color: #333;
+        position: relative;
+    }
+
+    .ew-banner:before {
+        display: none;
+    }
+
+    .ew-banner p {
+        color: #999;
+    }
+
+    .ew-banner img.shape {
+        -webkit-animation-duration: 5s;
+        animation-duration: 5s;
+    }
+
+    .ew-banner img {
+        pointer-events: none;
+    }
+
+    @media screen and (max-width: 768px) {
+        img.shape-main {
+            width: 90% !important;
+            max-width: 370px !important;
+            right: 15px !important;
+            top: 30px !important;
+        }
+
+        .ew-banner > .layui-container {
+            padding-top: 320px;
+            padding-bottom: 20px !important;
+            padding-right: 20px !important;
+        }
+
+        img.shape6 {
+            top: 510px !important;
+        }
+
+        img.shape4 {
+            left: 5px !important;
+            bottom: 300px !important;
+        }
+
+        .layui-logo > img {
+            top: 12px !important;
+        }
+
+        .ew-footer .img-group {
+            padding-left: 100px !important;
+            height: 103px !important;
+        }
+
+        .ew-footer .img-group > img {
+            width: 90px !important;
+            height: 90px !important;
+            top: 7px !important;
+        }
+    }
+
+    .product-card .product-cover > .product-cover-img {
+        background-position: 0 0;
+    }
+</style></head>
+<body>
+<!-- header -->
+<div class="ew-header">
+    <a class="layui-logo" href="/" style="letter-spacing: 1.5px;position: relative;">
+        <img src="__STATIC__assets/images/favicon.ico" style="width: 32px;height: 32px;position: absolute;top: 19px;left: 0;">
+        <span>{$data.web_name}</span>
+    </a>
+    <div class="ew-nav-group">
+        <div class="nav-toggle"><i class="layui-icon layui-icon-more-vertical"></i></div>
+        <ul class="layui-nav" lay-filter="ew-header-nav">
+            <li class="layui-nav-item">
+                <a lay-href="/index">首页</a>
+            </li>
+            <li class="layui-nav-item">
+                <a lay-href="/index#product">优势</a>
+            </li>
+            <li class="layui-nav-item">
+                <a lay-href="/index#guide">介绍</a>
+            </li>
+            <li class="layui-nav-item ">
+                <a href="javascript:;">商户<i class="layui-hide-xs">&emsp;</i></a>
+                <dl class="layui-nav-child" style="width: 130px;">
+                    <dd lay-unselect><a href="{:url('user/index')}" >登录</a></dd>
+                    <dd lay-unselect><a href="{:url('user/reg')}" >注册</a></dd>
+                </dl>
+            </li>
+            <!-- <li class="layui-nav-item nav-btn-login"><a href="{:url('user/index')}">登录</a></li>
+            <li class="layui-nav-item nav-btn-login"><a href="{:url('user/reg')}">注册</a></li> -->
+        </ul>
+    </div>
+</div>
+<!-- banner -->
+<div class="ew-banner" style="margin-top: 15px;">
+    <div class="layui-container" style="text-align: left;padding-bottom: 80px;padding-left: 30px;">
+        <h1 style="margin-top: 25px;">{$data.web_name}</h1>
+        <p style="margin-bottom: 10px;">聚合支付是商业变现必不可少的环节，界面美观、注册即用</p>
+        <p>覆盖所有主流支付渠道，给你最简单、快捷的接入体验。</p>
+        <div class="ew-banner-btngroup" style="margin-top: 40px;">
+            <a href="{:url('user/index')}" class="layui-btn" nav-scroll="pricing">立即体验<i class="layui-icon" style="transform: rotate(-90deg);">&#xe601;</i></a>
+        </div>
+        <img class="shape-main" src="{$data.luji}/images/3754wh1200.jpg"
+             style="width: 520px;position: absolute;top:60px;right: -60px;"/>
+        <img class="shape layui-anim-rotate layui-anim-loop" src="{$data.luji}/images/shape1.png"
+             style="position: absolute;right: -120px;top: 260px;"/>
+        <img class="shape layui-anim-rotate layui-anim-loop" src="{$data.luji}/images/shape2.png"
+             style="position: absolute;right: 560px;top: 60px;"/>
+        <img class="shape layui-anim-rotate layui-anim-loop" src="{$data.luji}/images/shape3.png"
+             style="position: absolute;right: 10px;top: 30px;"/>
+        <img class="shape shape4 layui-anim-rotate layui-anim-loop" src="{$data.luji}/images/shape4.png"
+             style="position: absolute;left: -60px;bottom: 100px;"/>
+        <img class="shape layui-anim-rotate layui-anim-loop" src="{$data.luji}/images/shape5.png"
+             style="position: absolute;left: -120px;top: 100px;"/>
+        <img class="shape shape6 layui-anim-rotate layui-anim-loop" src="{$data.luji}/images/shape6.png"
+             style="position: absolute;left: 300px;top: 400px;"/>
+    </div>
+</div>
+
+<!-- feature -->
+<div class="section" style="padding-bottom: 15px;margin-top: 15px;" nav-id="product">
+    <div class="section-title">
+        <h2>产品优势</h2>
+        <p>高额佣金激励回报，打造支付合作共赢生态</p>
+    </div>
+    <div class="layui-container">
+        <div class="layui-row">
+            <div class="layui-col-md4 layui-col-sm6">
+                <div class="feature">
+                    <i class="layui-icon layui-icon-praise"></i>
+                    <h3>快</h3>
+                    <p>3分钟快速集成 </p>
+                    <p>资金直达渠道账户</p>
+                    <p>接口秒级响应</p>
+                </div>
+            </div>
+            <div class="layui-col-md4 layui-col-sm6">
+                <div class="feature">
+                    <i class="layui-icon layui-icon-fire"></i>
+                    <h3>全</h3>
+                    <p>聚合多种支付方式、多种场景</p>
+                    <p>免签&签约通道可混合使用</p>
+                    <p>系统功能齐全,安全易用</p>
+                </div>
+            </div>
+            <div class="layui-col-md4 layui-col-sm6">
+                <div class="feature">
+                    <i class="layui-icon layui-icon-layouts"></i>
+                    <h3>稳</h3>
+                    <p>接口稳定不宕机</p>
+                    <p>API调用安全验证</p>
+                    <p>支持IOS、安卓常用浏览器</p>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+
+<!-- guide -->
+<div class="section" nav-id="guide">
+    <div class="section-title">
+        <h2>专业团队 - 专注支付</h2>
+        <p>不断更新迭代，精益求精</p>
+    </div>
+    <div class="layui-container" style="padding-bottom: 85px;">
+        <div class="layui-row layui-col-space30">
+            <div class="layui-col-md4">
+                <div class="guide">
+                    <i class="layui-icon layui-icon-vercode"></i>
+                    <h3>安全放心</h3>
+                    <p class="text-left" style="word-break: break-all;">
+                        &emsp;&emsp;我们用的支付接口全为自己申请，不存在二次对接的情况，彻底避免对接方跑路导致无法结算的情况！
+                    </p>
+                    <a href="{:url('user/index')}" class="layui-btn layui-btn-radius layui-btn-lg" >注册商户</a>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="guide">
+                    <i class="layui-icon layui-icon-fonts-code"></i>
+                    <h3>方便接入</h3>
+                    <p class="text-left" style="word-break: break-all;">
+                        &emsp;&emsp;根据我们提供的开发文档，可快速接入你的网站，让你的网站支持在线支付功能，享受免签约支付的乐趣。
+                    </p>
+                    <a href="{:url('user/index')}" class="layui-btn layui-btn-radius layui-btn-lg" >简单易用</a>
+                </div>
+            </div>
+            <div class="layui-col-md4">
+                <div class="guide">
+                    <i class="layui-icon layui-icon-praise"></i>
+                    <h3>服务保障</h3>
+                    <p class="text-left" style="word-break: break-all;">
+                        &emsp;&emsp;二维码或在线支付轻轻松松解决所有问题，提升顾客消费满意度的同时，还可享受到更优惠的费率、更安全的资金保障。
+                    </p>
+                    <a href="{:url('user/index')}" class="layui-btn layui-btn-radius layui-btn-lg" >现在加入</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- footer -->
+<div class="ew-footer" style="max-width: 100vw;overflow: hidden;">
+    <div class="layui-container">
+        <div class="layui-row layui-col-space30">
+            <div class="layui-col-md6">
+                <p class="img-group">
+                    <img src="__STATIC__assets/images/favicon.ico"/>
+                    <span>在线时间：周一至周六 08:00 ~ 22:00</span>
+                    <span style="white-space: nowrap;">Copyright©2021 {$data.web_name}.all rights reserved.</span>
+                    <span><a href="http://beian.miit.gov.cn" target="_blank"> {$data.web_beian}</a></span>
+            
+                </p>
+            </div>
+            <div class="layui-col-md4">
+                <h3 class="footer-item-title">联系我们</h3>
+                <p>
+                    <i class="layui-icon layui-icon-login-qq" style="transform: scale(0.95);"></i>
+                    <a href="{$data.web_kefu}" target="_blank">在线客服</a>
+                </p>
+                <p>
+                    <!--<p class="copyright">本 站 源 码 由 <a href="//shoquan.xyz/" target="_blank">呆 呆</a> 提 供 技 术 服 务 支 持</p>-->
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .ew-footer-links {
+        padding-bottom: 0;
+    }
+
+    .ew-footer-links p {
+        line-height: 29px;
+        white-space: nowrap;
+    }
+</style>
+
+<!-- js部分 -->
+<script type="text/javascript" src="{$data.luji}/layui/layui.js"></script>
+<script type="text/javascript" src="{$data.luji}/js/fhjdk.js?v=204"></script>
+<script type="text/javascript" src="{$data.luji}/js/admin.js?v=204"></script>
+
+</body>
+</html>
