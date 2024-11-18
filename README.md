@@ -1,5 +1,8 @@
 # YY
 YY币支付系统改良版本
+# 完整专业版源码
+https://zibovip.top/2837.html
+https://mensd.top/87.html
 
 Nginx ：1.20.1（版本都可以）
 
